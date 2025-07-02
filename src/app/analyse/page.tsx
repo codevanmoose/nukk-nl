@@ -40,12 +40,17 @@ function AnalyseContent() {
         body: JSON.stringify({ url: normalizedUrl }),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Analyse mislukt');
+        throw new Error(data.error || 'Analyse mislukt');
       }
 
-      const data: AnalysisResponse = await response.json();
-      setAnalysis(data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setAnalysis(data as AnalysisResponse);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Er is een fout opgetreden');
     } finally {

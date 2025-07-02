@@ -52,7 +52,8 @@
       "Bash(sudo dscacheutil:*)",
       "Bash(sudo killall:*)",
       "Bash(cp:*)",
-      "Bash(./fix-vercel-env.sh:*)"
+      "Bash(./fix-vercel-env.sh:*)",
+      "Bash(cd:*)"
     ],
     "deny": []
   }
