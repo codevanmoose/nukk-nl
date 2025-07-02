@@ -1,10 +1,10 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { render } from '@react-email/render';
-import WelcomeEmail from '../emails/welcome-email';
-import PaymentConfirmationEmail from '../emails/payment-confirmation';
-import CampaignApprovedEmail from '../emails/campaign-approved';
-import CampaignRejectedEmail from '../emails/campaign-rejected';
-import NewsletterConfirmationEmail from '../emails/newsletter-confirmation';
+// import { render } from '@react-email/render';
+// import WelcomeEmail from '../emails/welcome-email';
+// import PaymentConfirmationEmail from '../emails/payment-confirmation';
+// import CampaignApprovedEmail from '../emails/campaign-approved';
+// import CampaignRejectedEmail from '../emails/campaign-rejected';
+// import NewsletterConfirmationEmail from '../emails/newsletter-confirmation';
 
 // AWS SES Client configuration
 const sesClient = new SESClient({
@@ -94,7 +94,8 @@ class EmailService {
   }
 
   async sendWelcomeEmail(to: string, data: WelcomeEmailData): Promise<boolean> {
-    const html = render(WelcomeEmail(data));
+    // const html = render(WelcomeEmail(data));
+    const html = `<h1>Welkom bij nukk.nl - ${data.companyName}</h1><p>Email: ${data.email}</p><p><a href="${data.dashboardUrl}">Dashboard</a></p>`;
     
     return this.sendEmail({
       to,
@@ -104,7 +105,7 @@ class EmailService {
   }
 
   async sendPaymentConfirmation(to: string, data: PaymentConfirmationData): Promise<boolean> {
-    const html = render(PaymentConfirmationEmail(data));
+    const html = `<h1>Betaling Bevestigd</h1><p>Bedrag: €${(data.amount / 100).toFixed(2)}</p><p>Factuur: ${data.invoiceNumber}</p><p>Impressies: ${data.impressions}</p>`;
     
     return this.sendEmail({
       to,
@@ -114,7 +115,7 @@ class EmailService {
   }
 
   async sendCampaignApproved(to: string, data: CampaignApprovedData): Promise<boolean> {
-    const html = render(CampaignApprovedEmail(data));
+    const html = `<h1>Campagne Goedgekeurd</h1><p>Campagne: ${data.campaignName}</p><p>Impressies: ${data.impressions}</p>`;
     
     return this.sendEmail({
       to,
@@ -124,7 +125,7 @@ class EmailService {
   }
 
   async sendCampaignRejected(to: string, data: CampaignRejectedData): Promise<boolean> {
-    const html = render(CampaignRejectedEmail(data));
+    const html = `<h1>Campagne Afgewezen</h1><p>Campagne: ${data.campaignName}</p><p>Reden: ${data.rejectionReason}</p>`;
     
     return this.sendEmail({
       to,
@@ -134,7 +135,7 @@ class EmailService {
   }
 
   async sendNewsletterConfirmation(to: string, data: NewsletterConfirmationData): Promise<boolean> {
-    const html = render(NewsletterConfirmationEmail(data));
+    const html = `<h1>Bevestig nieuwsbrief</h1><p>Email: ${data.email}</p><p><a href="${data.confirmUrl}">Bevestigen</a></p>`;
     
     return this.sendEmail({
       to,
