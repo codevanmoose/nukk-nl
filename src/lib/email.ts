@@ -1,10 +1,10 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
-import WelcomeEmail from '@/emails/welcome-email';
-import PaymentConfirmationEmail from '@/emails/payment-confirmation';
-import CampaignApprovedEmail from '@/emails/campaign-approved';
-import CampaignRejectedEmail from '@/emails/campaign-rejected';
-import NewsletterConfirmationEmail from '@/emails/newsletter-confirmation';
+import WelcomeEmail from '../emails/welcome-email';
+import PaymentConfirmationEmail from '../emails/payment-confirmation';
+import CampaignApprovedEmail from '../emails/campaign-approved';
+import CampaignRejectedEmail from '../emails/campaign-rejected';
+import NewsletterConfirmationEmail from '../emails/newsletter-confirmation';
 
 // AWS SES Client configuration
 const sesClient = new SESClient({

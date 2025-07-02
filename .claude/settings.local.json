@@ -45,7 +45,9 @@
       "Bash(aws ses list-verified-email-addresses:*)",
       "Bash(aws ses list-identities:*)",
       "Bash(aws ses verify-domain-identity:*)",
-      "Bash(aws configure:*)"
+      "Bash(aws configure:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }
