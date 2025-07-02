@@ -20,12 +20,20 @@ export class AIAnalyzer {
   private grok: OpenAI | null = null;
 
   constructor() {
+    // Check if API keys are available
+    const openaiKey = process.env.OPENAI_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    
+    if (!openaiKey && !anthropicKey) {
+      console.warn('No AI API keys configured - using mock analysis for demonstration');
+    }
+    
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: openaiKey || 'sk-demo-key-not-configured',
     });
     
     this.anthropic = new Anthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
+      apiKey: anthropicKey || 'sk-ant-demo-key-not-configured',
     });
 
     // Grok uses OpenAI-compatible API
@@ -39,6 +47,12 @@ export class AIAnalyzer {
 
   async analyzeContent(content: ExtractedContent): Promise<AnalysisResult> {
     const startTime = Date.now();
+    
+    // Check if API keys are configured
+    if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+      // Return mock analysis for demonstration
+      return this.getMockAnalysis(content, startTime);
+    }
     
     try {
       // Try OpenAI first
@@ -292,6 +306,47 @@ export class AIAnalyzer {
     if (!Array.isArray(analysis.annotations)) {
       analysis.annotations = [];
     }
+  }
+
+  private getMockAnalysis(content: ExtractedContent, startTime: number): AnalysisResult {
+    // Generate realistic mock analysis for demonstration
+    const annotations: AnalysisResult['annotations'] = [
+      {
+        type: 'fact',
+        text: 'Het CDA heeft aangekondigd tegen de plannen te stemmen',
+        reasoning: 'Dit is een verifieerbaar feit over de stemintentie van het CDA',
+        confidence: 0.95,
+        start_index: 100,
+        end_index: 155
+      },
+      {
+        type: 'opinion',
+        text: 'belangrijke tegenslag',
+        reasoning: 'Het woord "belangrijke" is een subjectieve kwalificatie',
+        confidence: 0.85,
+        start_index: 400,
+        end_index: 420
+      },
+      {
+        type: 'suggestive',
+        text: 'lijken te stranden',
+        reasoning: 'Suggereert een uitkomst die nog niet definitief is',
+        confidence: 0.80,
+        start_index: 20,
+        end_index: 38
+      }
+    ];
+
+    return {
+      objectivity_score: 0.75,
+      fact_percentage: 65,
+      opinion_percentage: 20,
+      suggestive_percentage: 10,
+      incomplete_percentage: 5,
+      annotations,
+      processing_time_ms: Date.now() - startTime,
+      ai_model: 'mock-demo'
+    };
   }
 }
 
