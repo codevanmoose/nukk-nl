@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/admin-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,177 +12,234 @@ import {
   Image,
   ArrowUpRight,
   ArrowDownRight,
-  Activity
+  Activity,
+  AlertCircle,
+  Mail,
+  BarChart3,
+  Settings
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 interface DashboardStats {
-  revenue: {
-    total: number;
-    change: number;
-  };
-  advertisers: {
-    total: number;
-    active: number;
-    change: number;
-  };
-  campaigns: {
-    active: number;
-    pending: number;
-    total: number;
-  };
-  impressions: {
-    today: number;
-    change: number;
-  };
+  totalRevenue: number;
+  totalCampaigns: number;
+  activeAds: number;
+  newsletterSubscribers: number;
+  revenueChange: number;
+  campaignsChange: number;
+  adsChange: number;
+  subscribersChange: number;
+}
+
+interface RecentActivity {
+  id: string;
+  type: 'campaign_created' | 'payment_received' | 'ad_approved' | 'ad_rejected';
+  description: string;
+  timestamp: string;
+  amount?: number;
 }
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
-    revenue: { total: 12450, change: 15.3 },
-    advertisers: { total: 24, active: 18, change: 8.2 },
-    campaigns: { active: 12, pending: 3, total: 45 },
-    impressions: { today: 24567, change: -5.4 }
+    totalRevenue: 12750,
+    totalCampaigns: 23,
+    activeAds: 8,
+    newsletterSubscribers: 1204,
+    revenueChange: 12.5,
+    campaignsChange: 8.2,
+    adsChange: -2.1,
+    subscribersChange: 5.7
   });
 
-  const [recentActivity, setRecentActivity] = useState([
-    { id: 1, type: 'new_campaign', advertiser: 'Tech Startup NL', time: '2 uur geleden' },
-    { id: 2, type: 'payment', advertiser: 'Creative Agency', amount: 1499, time: '5 uur geleden' },
-    { id: 3, type: 'approval_needed', advertiser: 'Media Company BV', time: '8 uur geleden' },
-    { id: 4, type: 'campaign_completed', advertiser: 'E-commerce Plus', time: '1 dag geleden' },
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([
+    {
+      id: '1',
+      type: 'payment_received',
+      description: 'Payment received from Tech Startup NL',
+      timestamp: '2024-01-20T10:30:00Z',
+      amount: 999
+    },
+    {
+      id: '2',
+      type: 'ad_approved',
+      description: 'Ad approved for Media Company BV campaign',
+      timestamp: '2024-01-20T09:15:00Z'
+    },
+    {
+      id: '3',
+      type: 'campaign_created',
+      description: 'New campaign created by Creative Agency',
+      timestamp: '2024-01-20T08:45:00Z'
+    },
+    {
+      id: '4',
+      type: 'ad_rejected',
+      description: 'Ad rejected for violation of content policy',
+      timestamp: '2024-01-19T16:30:00Z'
+    }
   ]);
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('nl-NL', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(amount);
+  };
+
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('nl-NL').format(num);
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'payment_received':
+        return <Euro className="h-4 w-4 text-green-600" />;
+      case 'ad_approved':
+        return <Image className="h-4 w-4 text-blue-600" />;
+      case 'campaign_created':
+        return <Activity className="h-4 w-4 text-purple-600" />;
+      case 'ad_rejected':
+        return <AlertCircle className="h-4 w-4 text-red-600" />;
+      default:
+        return <Activity className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getActivityBadgeColor = (type: string) => {
+    switch (type) {
+      case 'payment_received':
+        return 'bg-green-100 text-green-800';
+      case 'ad_approved':
+        return 'bg-blue-100 text-blue-800';
+      case 'campaign_created':
+        return 'bg-purple-100 text-purple-800';
+      case 'ad_rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
-        {/* Page header */}
+      <div className="space-y-6">
+        {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
-            Welkom terug! Hier is een overzicht van je platform.
+            Overzicht van je advertentieplatform prestaties
           </p>
         </div>
 
-        {/* Stats grid */}
+        {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Revenue card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Totale Omzet</CardTitle>
               <Euro className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">€{stats.revenue.total.toLocaleString('nl-NL')}</div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                {stats.revenue.change > 0 ? (
-                  <>
-                    <ArrowUpRight className="w-3 h-3 text-green-500" />
-                    <span className="text-green-500">+{stats.revenue.change}%</span>
-                  </>
+              <div className="text-2xl font-bold">{formatCurrency(stats.totalRevenue)}</div>
+              <div className="flex items-center text-xs text-muted-foreground">
+                {stats.revenueChange > 0 ? (
+                  <ArrowUpRight className="mr-1 h-3 w-3 text-green-600" />
                 ) : (
-                  <>
-                    <ArrowDownRight className="w-3 h-3 text-red-500" />
-                    <span className="text-red-500">{stats.revenue.change}%</span>
-                  </>
+                  <ArrowDownRight className="mr-1 h-3 w-3 text-red-600" />
                 )}
-                <span>deze maand</span>
-              </p>
+                {Math.abs(stats.revenueChange)}% t.o.v. vorige maand
+              </div>
             </CardContent>
           </Card>
 
-          {/* Advertisers card */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Adverteerders</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.advertisers.total}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.advertisers.active} actief, {stats.advertisers.change > 0 ? '+' : ''}{stats.advertisers.change}% groei
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Active campaigns card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Campagnes</CardTitle>
-              <Image className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.campaigns.active}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.campaigns.pending} wachten op goedkeuring
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Impressions card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Impressies Vandaag</CardTitle>
+              <CardTitle className="text-sm font-medium">Totale Campagnes</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.impressions.today.toLocaleString('nl-NL')}</div>
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                {stats.impressions.change > 0 ? (
-                  <>
-                    <ArrowUpRight className="w-3 h-3 text-green-500" />
-                    <span className="text-green-500">+{stats.impressions.change}%</span>
-                  </>
+              <div className="text-2xl font-bold">{formatNumber(stats.totalCampaigns)}</div>
+              <div className="flex items-center text-xs text-muted-foreground">
+                {stats.campaignsChange > 0 ? (
+                  <ArrowUpRight className="mr-1 h-3 w-3 text-green-600" />
                 ) : (
-                  <>
-                    <ArrowDownRight className="w-3 h-3 text-red-500" />
-                    <span className="text-red-500">{stats.impressions.change}%</span>
-                  </>
+                  <ArrowDownRight className="mr-1 h-3 w-3 text-red-600" />
                 )}
-                <span>vs gisteren</span>
-              </p>
+                {Math.abs(stats.campaignsChange)}% t.o.v. vorige maand
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Actieve Advertenties</CardTitle>
+              <img alt="" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatNumber(stats.activeAds)}</div>
+              <div className="flex items-center text-xs text-muted-foreground">
+                {stats.adsChange > 0 ? (
+                  <ArrowUpRight className="mr-1 h-3 w-3 text-green-600" />
+                ) : (
+                  <ArrowDownRight className="mr-1 h-3 w-3 text-red-600" />
+                )}
+                {Math.abs(stats.adsChange)}% t.o.v. vorige maand
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Nieuwsbrief Abonnees</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatNumber(stats.newsletterSubscribers)}</div>
+              <div className="flex items-center text-xs text-muted-foreground">
+                {stats.subscribersChange > 0 ? (
+                  <ArrowUpRight className="mr-1 h-3 w-3 text-green-600" />
+                ) : (
+                  <ArrowDownRight className="mr-1 h-3 w-3 text-red-600" />
+                )}
+                {Math.abs(stats.subscribersChange)}% t.o.v. vorige maand
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Recent activity and quick actions */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          {/* Recent activity */}
+        {/* Recent Activity and Quick Actions */}
+        <div className="grid gap-4 md:grid-cols-7">
           <Card className="col-span-4">
             <CardHeader>
               <CardTitle>Recente Activiteit</CardTitle>
               <CardDescription>
-                Laatste acties op het platform
+                Laatste updates van je advertentieplatform
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-2 h-2 rounded-full",
-                        activity.type === 'approval_needed' ? 'bg-yellow-500' :
-                        activity.type === 'new_campaign' ? 'bg-blue-500' :
-                        activity.type === 'payment' ? 'bg-green-500' :
-                        'bg-gray-500'
-                      )} />
-                      <div>
-                        <p className="text-sm font-medium">
-                          {activity.type === 'new_campaign' && `Nieuwe campagne: ${activity.advertiser}`}
-                          {activity.type === 'payment' && `Betaling ontvangen: €${activity.amount}`}
-                          {activity.type === 'approval_needed' && `Goedkeuring vereist: ${activity.advertiser}`}
-                          {activity.type === 'campaign_completed' && `Campagne voltooid: ${activity.advertiser}`}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{activity.time}</p>
-                      </div>
+                  <div key={activity.id} className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      {getActivityIcon(activity.type)}
                     </div>
-                    {activity.type === 'approval_needed' && (
-                      <Link href="/admin/ads">
-                        <Button size="sm" variant="outline">
-                          Bekijken
-                        </Button>
-                      </Link>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">
+                        {activity.description}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(activity.timestamp).toLocaleDateString('nl-NL', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          day: 'numeric',
+                          month: 'short'
+                        })}
+                      </p>
+                    </div>
+                    {activity.amount && (
+                      <div className="text-sm font-medium text-green-600">
+                        +{formatCurrency(activity.amount)}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -188,73 +247,58 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          {/* Quick actions */}
           <Card className="col-span-3">
             <CardHeader>
               <CardTitle>Snelle Acties</CardTitle>
               <CardDescription>
-                Veelgebruikte taken
+                Veelgebruikte admin taken
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Link href="/admin/ads?filter=pending" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <AlertCircle className="w-4 h-4 mr-2 text-yellow-500" />
-                  Advertenties beoordelen (3)
+            <CardContent className="space-y-3">
+              <Link href="/admin/ads" className="block">
+                <Button className="w-full justify-start" variant="outline">
+                  <AlertCircle className="mr-2 h-4 w-4" />
+                  Advertenties Modereren
                 </Button>
               </Link>
-              <Link href="/admin/newsletter/compose" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Nieuwsbrief opstellen
+              
+              <Link href="/admin/newsletter" className="block">
+                <Button className="w-full justify-start" variant="outline">
+                  <Mail className="mr-2 h-4 w-4" />
+                  Nieuwsbrief Versturen
                 </Button>
               </Link>
+              
               <Link href="/admin/analytics" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Analytics bekijken
+                <Button className="w-full justify-start" variant="outline">
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Analytics Bekijken
                 </Button>
               </Link>
-              <Link href="/admin/settings" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Platform instellingen
-                </Button>
-              </Link>
+              
+              <Button className="w-full justify-start" variant="outline">
+                <Settings className="mr-2 h-4 w-4" />
+                Platform Instellingen
+              </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Pending approvals alert */}
-        {stats.campaigns.pending > 0 && (
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-yellow-600" />
-                  <CardTitle className="text-lg">Actie Vereist</CardTitle>
-                </div>
-                <Link href="/admin/ads?filter=pending">
-                  <Button size="sm">
-                    Bekijk alle
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-yellow-800">
-                Er zijn {stats.campaigns.pending} advertenties die wachten op goedkeuring. 
-                AI-moderatie heeft deze geflagged voor handmatige review.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* Platform Health Alert */}
+        <Card className="border-orange-200 bg-orange-50">
+          <CardHeader className="pb-3">
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="h-5 w-5 text-orange-600" />
+              <CardTitle className="text-orange-900">Platform Status</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <p className="text-sm text-orange-800">
+              Alle systemen operationeel. Advertentieplatform draait optimaal met 99.9% uptime.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );
-}
-
-// Helper function (should be imported from utils)
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
 }

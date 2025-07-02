@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AdminLayout from '@/components/admin/admin-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -93,7 +95,7 @@ const mockCampaigns: AdCampaign[] = [
   }
 ];
 
-export default function AdsManagement() {
+function AdsManagementContent() {
   const searchParams = useSearchParams();
   const [campaigns, setCampaigns] = useState<AdCampaign[]>(mockCampaigns);
   const [searchTerm, setSearchTerm] = useState('');
@@ -387,5 +389,13 @@ export default function AdsManagement() {
         </Tabs>
       </div>
     </AdminLayout>
+  );
+}
+
+export default function AdsManagement() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdsManagementContent />
+    </Suspense>
   );
 }
