@@ -32,7 +32,8 @@
       "WebFetch(domain:nukk.nl)",
       "WebFetch(domain:nukk-nl.vercel.app)",
       "WebFetch(domain:www.nukk.nl)",
-      "Bash(nslookup:*)"
+      "Bash(nslookup:*)",
+      "WebFetch(domain:wetransfer.com)"
     ],
     "deny": []
   }

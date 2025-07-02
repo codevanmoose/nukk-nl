@@ -1,34 +1,65 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import HeroSection from '@/components/homepage/hero-section';
 import HowItWorks from '@/components/homepage/how-it-works';
 import TrustIndicators from '@/components/homepage/trust-indicators';
-import AdBanner from '@/components/ads/ad-banner';
+import NewsletterSignup from '@/components/newsletter/newsletter-signup';
+
+// Lazy load wallpaper ad for better performance
+const WallpaperAd = dynamic(() => import('@/components/ads/wallpaper-ad'), {
+  ssr: false
+});
 
 export default function Home() {
+  const [showWallpaperAd, setShowWallpaperAd] = useState(false);
+
+  useEffect(() => {
+    // Check if user has seen the wallpaper ad in this session
+    const hasSeenAd = sessionStorage.getItem('wallpaper-ad-seen');
+    
+    // Show ad only on first visit of the session
+    if (!hasSeenAd) {
+      setShowWallpaperAd(true);
+    }
+  }, []);
+
+  const handleAdComplete = () => {
+    setShowWallpaperAd(false);
+    // Mark ad as seen for this session
+    sessionStorage.setItem('wallpaper-ad-seen', 'true');
+  };
+
   return (
-    <div className="min-h-screen">
-      <HeroSection />
-      
-      {/* Ad placement 1: After hero, before how it works */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <AdBanner 
-          slot="1234567890" 
-          format="horizontal"
-          className="min-h-[90px]"
+    <>
+      {/* WeTransfer-style wallpaper ad */}
+      {showWallpaperAd && (
+        <WallpaperAd 
+          onComplete={handleAdComplete}
+          skipDelay={5} // 5 seconds before skip button appears
         />
-      </div>
+      )}
+      
+      <div>
+        <HeroSection />
+      
       
       <HowItWorks />
       
-      {/* Ad placement 2: After how it works, before stats */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <AdBanner 
-          slot="0987654321" 
-          format="rectangle"
-          className="min-h-[250px] max-w-[300px] mx-auto"
-        />
+        <TrustIndicators />
+        
+        {/* Newsletter signup section */}
+        <div className="py-12 px-4 bg-gray-50">
+          <div className="max-w-4xl mx-auto text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Mis geen belangrijke fact-checks</h2>
+            <p className="text-lg text-muted-foreground">
+              Ontvang wekelijks de meest opvallende analyses en onthullingen
+            </p>
+          </div>
+          <NewsletterSignup />
+        </div>
       </div>
-      
-      <TrustIndicators />
-    </div>
+    </>
   );
 }

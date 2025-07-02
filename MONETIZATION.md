@@ -1,54 +1,54 @@
 # Monetization Strategy for nukk.nl
 
-## Current Implementation: Google AdSense
+## Current Implementation: Wallpaper Ads (WeTransfer-style)
 
-### Setup Instructions
-1. **Create AdSense Account**
-   - Go to https://www.google.com/adsense/
-   - Sign up with your Google account
-   - Add nukk.nl as your website
-   - Wait for approval (can take 24-72 hours)
+### Overview
+We've moved to a wallpaper-only advertising strategy inspired by WeTransfer. This provides a less intrusive, more premium user experience while maintaining monetization potential.
 
-2. **Get Your Publisher ID**
-   - Format: `ca-pub-XXXXXXXXXXXXXXXXX`
-   - Found in AdSense > Account > Account Information
+### How It Works
+1. **First Visit Only**: Shows full-screen wallpaper ad on initial visit per session
+2. **Skip Button**: Appears after 5 seconds (configurable)
+3. **Session Storage**: Prevents repeated ads during the same browsing session
+4. **Mobile Responsive**: Adapts to all screen sizes
 
-3. **Configure Environment Variable**
-   ```bash
-   NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT=ca-pub-YOUR_ID_HERE
-   ```
+### Implementation Details
+The wallpaper ad component (`/src/components/ads/wallpaper-ad.tsx`) features:
+- Full viewport coverage
+- Smooth transitions
+- Skip functionality
+- Session-based frequency capping
+- Performance optimization through lazy loading
 
-4. **Update Ad Slots**
-   - Create ad units in AdSense dashboard
-   - Replace placeholder slot IDs in code with real ones
+### Configuration
+```javascript
+// In page component
+<WallpaperAd 
+  onComplete={handleAdComplete}
+  skipDelay={5} // Seconds before skip button appears
+/>
+```
 
-### Current Ad Placements
-1. **Homepage**
-   - Horizontal banner after hero section (728x90)
-   - Rectangle ad before statistics (300x250)
+## Revenue Model Comparison
 
-2. **Analysis Page**
-   - Horizontal banner between results and details (728x90)
+### Wallpaper Ads (Current)
+**Advantages:**
+- Higher CPM rates (€5-15 vs €1-3 for banner ads)
+- Better user experience
+- Premium brand associations
+- Higher engagement rates
 
-### Ad Placement Best Practices
-- Above the fold but not intrusive
-- Between content sections
-- Mobile-responsive formats
-- Not blocking critical user actions
+**Revenue Projections:**
+| Daily Unique Visitors | Monthly Revenue (Est.) |
+|----------------------|------------------------|
+| 1,000                | €150-450              |
+| 5,000                | €750-2,250            |
+| 10,000               | €1,500-4,500          |
 
-## Revenue Projections
-
-### Conservative Estimates (Based on Dutch market)
-- **CPM (Cost Per Mille)**: €1-3 for Dutch traffic
-- **CTR (Click Through Rate)**: 0.5-1.5% typical
-
-### Monthly Projections by Traffic
-| Page Views | Ad Revenue (Est.) |
-|------------|-------------------|
-| 10,000     | €10-30           |
-| 50,000     | €50-150          |
-| 100,000    | €100-300         |
-| 500,000    | €500-1,500       |
+### Previous AdSense Model (Removed)
+- Multiple banner placements
+- Lower CPM rates
+- More intrusive user experience
+- Higher bounce rates
 
 ## Alternative Monetization Strategies
 
@@ -62,113 +62,157 @@
 - Pricing: €0.01 per analysis
 - Bulk packages available
 
-### 3. Sponsored Content
-- Partner with media literacy organizations
-- Sponsored educational content
-- Fact-checking workshops
+### 3. Sponsored Wallpapers
+- Partner with brands for custom wallpaper campaigns
+- Higher CPM rates for targeted campaigns
+- Educational content partnerships
 
-### 4. Affiliate Marketing
-- Book recommendations on media literacy
-- Online courses on critical thinking
-- VPN services (privacy-focused)
+### 4. Newsletter Monetization
+- Build email list through current signup form
+- Sponsored newsletter content
+- Premium newsletter tier
 
-### 5. Donations/Buy Me a Coffee
-- Add donation button
-- Patreon for regular supporters
-- One-time contributions
-
-### 6. White Label Solution
+### 5. White Label Solution
 - License technology to news organizations
 - Custom branding options
 - Monthly SaaS fees
 
 ## Implementation Roadmap
 
-### Phase 1: Current (AdSense) ✅
-- Basic ad implementation
-- Test ad performance
-- Optimize placements
+### Phase 1: Current (Wallpaper Ads) ✅
+- Wallpaper ad implementation complete
+- Session-based frequency capping
+- Performance optimized
 
-### Phase 2: User Accounts (Month 2)
+### Phase 2: Direct Sales (Month 2)
+- Create media kit
+- Reach out to premium advertisers
+- Implement campaign management
+
+### Phase 3: User Accounts (Month 3)
 - User registration system
 - Usage tracking
 - Prepare for premium features
 
-### Phase 3: Premium Features (Month 3)
+### Phase 4: Premium Features (Month 4)
 - Payment processing (Stripe)
 - Premium tier implementation
 - Remove ads for paying users
 
-### Phase 4: B2B Solutions (Month 6)
+### Phase 5: B2B Solutions (Month 6)
 - API documentation
 - Enterprise features
 - Custom integrations
 
-## Ethical Considerations
+## Wallpaper Ad Best Practices
 
-### User Experience First
-- Ads should not interfere with fact-checking
-- Clear labeling of advertisements
-- No misleading or political ads
+### Design Guidelines
+- High-quality, relevant imagery
+- Clear brand messaging
+- Non-intrusive skip button
+- Mobile-first design
 
-### Privacy
-- No invasive tracking
-- GDPR compliant
-- Clear privacy policy
+### Performance
+- Lazy load images
+- Optimize file sizes
+- Preload critical assets
+- Monitor load times
 
-### Content Integrity
-- Fact-checking remains unbiased
-- No advertiser influence on results
-- Transparent about funding
-
-## Technical Implementation
-
-### Ad Loading Strategy
-```javascript
-// Lazy load ads for better performance
-const AdBanner = dynamic(() => import('@/components/ads/ad-banner'), {
-  loading: () => <div className="ad-placeholder" />,
-  ssr: false
-});
-```
-
-### Ad Blocker Detection
-```javascript
-// Polite message for ad blocker users
-if (window.adBlockEnabled) {
-  showMessage("We rely on ads to keep this service free. Please consider whitelisting us.");
-}
-```
+### User Experience
+- Respect user choice (skip button)
+- Session-based limits
+- Clear value proposition
+- Smooth transitions
 
 ## Success Metrics
 
 ### Key Performance Indicators
-1. **Ad Revenue**
-   - RPM (Revenue per mille)
-   - Fill rate
-   - Viewability
+1. **Ad Performance**
+   - View rate
+   - Skip rate
+   - Time before skip
+   - Click-through rate
 
 2. **User Metrics**
    - Bounce rate impact
-   - User retention
-   - Ad interaction rate
+   - Session duration
+   - Return visitor rate
 
-3. **Conversion Metrics**
-   - Free to paid conversion
-   - API adoption rate
-   - Newsletter signups
+3. **Revenue Metrics**
+   - eCPM (effective CPM)
+   - Fill rate
+   - Revenue per user
+
+## Advertiser Guidelines
+
+### Acceptable Advertisers
+- Educational institutions
+- Media literacy organizations
+- Technology companies
+- Cultural institutions
+- Non-partisan NGOs
+
+### Excluded Categories
+- Political parties/campaigns
+- Gambling
+- Adult content
+- Misleading/fake products
+- Direct competitors
+
+## Technical Considerations
+
+### Ad Serving Options
+1. **Direct Sales** (Recommended)
+   - Higher revenue
+   - Full control
+   - Better brand alignment
+
+2. **Ad Networks**
+   - Google Ad Manager
+   - Media.net
+   - Specific wallpaper ad networks
+
+### Implementation Tips
+```javascript
+// Preload wallpaper images
+const preloadImage = (src) => {
+  const img = new Image();
+  img.src = src;
+};
+
+// Track wallpaper performance
+analytics.track('wallpaper_view', {
+  advertiser: 'brand_name',
+  skip_time: secondsBeforeSkip,
+  completed: !userSkipped
+});
+```
 
 ## Next Steps
 
-1. **Apply for AdSense** (if not already done)
-2. **Set up Analytics** to track ad performance
-3. **A/B Test** ad placements
-4. **Create Premium Landing Page** for future paid tier
-5. **Build Email List** for direct monetization
+1. **Set up advertiser outreach**
+   - Create media kit
+   - Define pricing tiers
+   - Build advertiser portal
+
+2. **Optimize current implementation**
+   - A/B test skip delays
+   - Test different transitions
+   - Improve mobile experience
+
+3. **Build analytics dashboard**
+   - Real-time performance metrics
+   - Advertiser reporting
+   - Revenue tracking
+
+4. **Create sales materials**
+   - Case studies
+   - Audience demographics
+   - Performance benchmarks
 
 ## Useful Resources
 
-- [Google AdSense Help](https://support.google.com/adsense)
-- [AdSense Optimization Tips](https://www.google.com/adsense/start/resources/optimization/)
-- [GDPR Compliance for Publishers](https://support.google.com/adsense/answer/7670013)
-- [Stripe Atlas](https://stripe.com/atlas) - For setting up payments later
+- [WeTransfer Advertising](https://wetransfer.com/advertising) - Inspiration
+- [Wallpaper Ad Best Practices](https://www.iab.com/guidelines/)
+- [GDPR Compliance for Publishers](https://iabeurope.eu/gdpr/)
+- [Stripe Atlas](https://stripe.com/atlas) - For payment processing

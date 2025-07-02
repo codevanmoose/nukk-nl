@@ -8,7 +8,6 @@ import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse } from '@/types';
 import { ArrowLeft, ExternalLink, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import AdBanner from '@/components/ads/ad-banner';
 
 function AnalyseContent() {
   const searchParams = useSearchParams();
@@ -226,15 +225,6 @@ function AnalyseContent() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Ad placement: Between analysis summary and detailed view */}
-        <div className="py-4">
-          <AdBanner 
-            slot="1122334455" 
-            format="horizontal"
-            className="min-h-[90px]"
-          />
-        </div>
 
         {/* Coming Soon - Full Analysis */}
         <Card>

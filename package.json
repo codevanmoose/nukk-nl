@@ -12,8 +12,12 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.12",
+    "@react-email/components": "^0.1.1",
+    "@stripe/stripe-js": "^7.4.0",
     "@supabase/supabase-js": "^2.50.0",
     "@types/puppeteer": "^5.4.7",
     "anthropic": "^0.0.0",
@@ -28,6 +32,9 @@
     "puppeteer": "^24.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-email": "^4.0.17",
+    "resend": "^4.6.0",
+    "stripe": "^18.3.0",
     "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.5"
   },
