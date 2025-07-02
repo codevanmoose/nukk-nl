@@ -181,3 +181,12 @@ src/
 - [ ] Accessibility standards are met
 - [ ] Share functionality works on all platforms
 - [ ] Error states are handled gracefully
+
+## Authenticated Services on This Machine
+The following services are authenticated and available for all projects:
+- **GitHub**: SSH key authentication configured
+- **Vercel**: Logged in as `vanmoose`
+- **Supabase**: API token configured
+- **DigitalOcean**: Authenticated with `jaspervanmoose@gmail.com`
+
+All CLIs are installed and authentication persists across restarts.
