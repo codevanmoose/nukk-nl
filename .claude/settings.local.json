@@ -48,7 +48,9 @@
       "Bash(aws configure:*)",
       "Bash(npx playwright install:*)",
       "Bash(node:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(sudo dscacheutil:*)",
+      "Bash(sudo killall:*)"
     ],
     "deny": []
   }
