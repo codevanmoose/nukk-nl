@@ -44,7 +44,8 @@
       "Bash(aws ses get-account-sending-enabled:*)",
       "Bash(aws ses list-verified-email-addresses:*)",
       "Bash(aws ses list-identities:*)",
-      "Bash(aws ses verify-domain-identity:*)"
+      "Bash(aws ses verify-domain-identity:*)",
+      "Bash(aws configure:*)"
     ],
     "deny": []
   }
