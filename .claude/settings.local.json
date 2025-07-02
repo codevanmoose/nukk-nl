@@ -22,7 +22,13 @@
       "Bash(touch:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(gh repo create:*)"
+      "Bash(gh repo create:*)",
+      "Bash(gh auth:*)",
+      "Bash(vercel:*)",
+      "Bash(git push:*)",
+      "Bash(read:*)",
+      "Bash(chmod:*)",
+      "Bash(supabase:*)"
     ],
     "deny": []
   }

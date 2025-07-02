@@ -3,8 +3,8 @@
 ## Project Overview
 Building nukk.nl - an AI-powered fact-checking platform for nu.nl articles that detects subjectivity, opinions presented as facts, and incomplete framing.
 
-## 🎉 Current Status: MVP COMPLETED ✅
-The core functionality is complete and running on localhost:3000!
+## 🎉 Current Status: PRODUCTION DEPLOYMENT IN PROGRESS 🚀
+The core functionality is complete and deployed to production infrastructure!
 
 ## Development Commands
 ```bash
@@ -67,32 +67,36 @@ npm run build
 - ✅ Visual progress bars and breakdowns
 - ✅ Loading states and error handling
 
-## 🔧 Current Server Status
-- **Development Server**: Running on http://localhost:3000
-- **Status**: Ready and accessible
-- **Build Status**: All TypeScript and ESLint errors fixed
-- **Middleware**: Temporarily disabled for debugging
+## 🔧 Current Deployment Status
+- **GitHub Repository**: ✅ https://github.com/codevanmoose/nukk-nl
+- **Vercel Project**: ✅ https://nukk-6miai2457-vanmooseprojects.vercel.app
+- **Supabase Project**: ✅ https://supabase.com/dashboard/project/yahsiojkdmrhfifhicgr
+- **Environment Variables**: ✅ Added to Vercel (placeholders)
+- **Database Schema**: ⏳ Pending setup in Supabase dashboard
+- **API Keys**: ⏳ Pending real values in Vercel
 
 ## 📋 Next Steps & Roadmap
 
-### 🔥 High Priority (Ready for Production)
-- [ ] **Set up environment variables for production**
-  - Add OpenAI API key
-  - Add Anthropic API key
-  - Add Grok (xAI) API key (optional but recommended)
-  - Configure Supabase credentials
-  - Set up Redis (optional)
+### 🔥 High Priority (Final Deployment Steps)
+- [x] **GitHub Repository Setup**
+  - ✅ Repository created: https://github.com/codevanmoose/nukk-nl
+  - ✅ Code pushed with all features
 
-- [ ] **Test end-to-end functionality with real nu.nl URLs**
-  - Test content extraction
-  - Verify AI analysis accuracy
-  - Check database storage
-  - Validate UI response
+- [x] **Vercel Deployment Infrastructure**
+  - ✅ Project created and linked
+  - ✅ Environment variables added (placeholders)
+  - ✅ Auto-deployment configured
 
-- [ ] **Re-enable and fix URL redirect middleware**
-  - Test nukk.nl/path → analysis redirects
-  - Handle edge cases and errors
-  - Improve performance
+- [x] **Supabase Database Infrastructure**
+  - ✅ Project created: nukk-nl (yahsiojkdmrhfifhicgr)
+  - ✅ Database password set: NukkFact2024!
+  - ⏳ Database schema pending setup
+
+- [ ] **Complete Environment Configuration**
+  - [ ] Update API keys in Vercel with real values
+  - [ ] Run database/schema.sql in Supabase dashboard
+  - [ ] Update Supabase credentials in Vercel
+  - [ ] Test production deployment
 
 ### 🎯 Medium Priority (Enhanced Features)
 - [ ] **Enhanced annotation display with text highlighting**
@@ -190,3 +194,13 @@ The following services are authenticated and available for all projects:
 - **DigitalOcean**: Authenticated with `jaspervanmoose@gmail.com`
 
 All CLIs are installed and authentication persists across restarts.
+
+## Production Infrastructure URLs
+- **GitHub Repository**: https://github.com/codevanmoose/nukk-nl
+- **Vercel Project**: https://nukk-6miai2457-vanmooseprojects.vercel.app
+- **Supabase Dashboard**: https://supabase.com/dashboard/project/yahsiojkdmrhfifhicgr
+- **Deployment Guide**: See DEPLOYMENT.md and supabase-setup.md
+
+## Quick Setup Scripts
+- `./update-env.sh VARIABLE_NAME "value"` - Update Vercel environment variables
+- `./setup-vercel-env.sh` - Interactive setup for all environment variables
