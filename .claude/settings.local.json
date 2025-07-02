@@ -50,7 +50,8 @@
       "Bash(node:*)",
       "Bash(grep:*)",
       "Bash(sudo dscacheutil:*)",
-      "Bash(sudo killall:*)"
+      "Bash(sudo killall:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
