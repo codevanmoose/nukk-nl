@@ -36,7 +36,7 @@ npm run build
 ## Tech Stack
 - **Frontend**: Next.js 15.3.3, TypeScript, Tailwind CSS, Shadcn/ui
 - **Backend**: Next.js API Routes, Node.js 20+
-- **AI**: OpenAI GPT-4, Anthropic Claude 3 (fallback)
+- **AI**: OpenAI GPT-4, Anthropic Claude 3, xAI Grok (triple fallback)
 - **Database**: PostgreSQL (Supabase)
 - **Web Scraping**: Puppeteer
 - **Infrastructure**: Vercel (frontend), Google Cloud Run (backend), Cloudflare (CDN/WAF)
@@ -53,7 +53,7 @@ npm run build
 ### Phase 2: Core Functionality ✅
 - ✅ Homepage with URL input validation
 - ✅ nu.nl content extraction with Puppeteer
-- ✅ AI analysis engine (OpenAI + Anthropic fallback)
+- ✅ AI analysis engine (OpenAI + Anthropic + Grok triple fallback)
 - ✅ URL redirect system (nukk.nl/path → analysis)
 - ✅ Analysis results page with interactive UI
 - ✅ Database storage and caching
@@ -78,7 +78,8 @@ npm run build
 ### 🔥 High Priority (Ready for Production)
 - [ ] **Set up environment variables for production**
   - Add OpenAI API key
-  - Add Anthropic API key  
+  - Add Anthropic API key
+  - Add Grok (xAI) API key (optional but recommended)
   - Configure Supabase credentials
   - Set up Redis (optional)
 
