@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
@@ -9,7 +9,7 @@ import { AnalysisResponse } from '@/types';
 import { ArrowLeft, ExternalLink, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function AnalysePage() {
+function AnalyseContent() {
   const searchParams = useSearchParams();
   const url = searchParams.get('url');
   
@@ -243,5 +243,19 @@ export default function AnalysePage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function AnalysePage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    }>
+      <AnalyseContent />
+    </Suspense>
   );
 }
