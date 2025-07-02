@@ -1,0 +1,611 @@
+# Product Requirements Document (PRD)
+## nukk.nl - AI-powered Fact-Checking Platform voor nu.nl
+
+### Document Informatie
+- **Product:** nukk.nl
+- **Versie:** 1.0
+- **Datum:** 18 juni 2025
+- **Author:** Product Management Team
+- **Status:** Concept
+
+---
+
+## 1. Executive Summary
+
+### 1.1 Productvisie
+nukk.nl is een innovatief fact-checking platform dat transparantie brengt in Nederlandse nieuwsconsumptie door automatisch nu.nl artikelen te analyseren op subjectiviteit, opinie-als-feit presentatie, en incomplete framing. Het platform combineert gebruiksvriendelijkheid met geavanceerde AI-technologie om media-geletterdheid te bevorderen.
+
+### 1.2 Belangrijkste Waardepropositie
+- **Voor lezers:** Direct inzicht in de objectiviteit van nieuwsartikelen
+- **Voor de maatschappij:** Verhoogde media-geletterdheid en kritisch denkvermogen
+- **Voor het platform:** Monetisatie via advertenties en potentiële premium features
+
+### 1.3 Success Metrics
+- 1000+ unieke gebruikers binnen eerste maand
+- 95% nauwkeurigheid in opiniedetectie
+- <5 seconden laadtijd per analyse
+- 3+ advertentie-impressies per sessie
+
+---
+
+## 2. Marktanalyse & Gebruikersonderzoek
+
+### 2.1 Doelgroep
+
+**Primaire gebruikers:**
+- Leeftijd: 25-55 jaar
+- Opleidingsniveau: MBO+
+- Mediagedrag: Dagelijkse nieuwsconsumenten
+- Technologie: Comfortabel met webapplicaties
+- Motivatie: Zoeken naar objectieve nieuwsinterpretatie
+
+**Secundaire gebruikers:**
+- Journalisten en media-analisten
+- Onderwijs (docenten maatschappijleer)
+- Fact-checking enthousiastelingen
+
+### 2.2 User Personas
+
+**Persona 1: "Kritische Karin"**
+- 35 jaar, marketingmanager
+- Leest dagelijks nieuws tijdens woon-werkverkeer
+- Ergert zich aan clickbait en subjectieve berichtgeving
+- Wil snel kunnen beoordelen of een artikel betrouwbaar is
+
+**Persona 2: "Student Stefan"**
+- 22 jaar, studeert politicologie
+- Gebruikt nieuws voor studieopdrachten
+- Heeft behoefte aan bronverificatie
+- Deelt interessante analyses op social media
+
+### 2.3 Competitieve Analyse
+- **Directe concurrenten:** Geen specifieke NL fact-checkers voor nu.nl
+- **Indirecte concurrenten:** Nieuwschecker.nl, Factcheck.vlaanderen
+- **Differentiators:** Real-time analyse, URL-hack gemak, automatische publicatie
+
+---
+
+## 3. Functionele Requirements
+
+### 3.1 Homepage Requirements
+
+#### 3.1.1 UI Components
+```
+- Hero sectie met:
+  - Titel: "Check nu.nl artikelen op feiten"
+  - Subtitel: "Ontdek waar mening als feit wordt gepresenteerd"
+  - URL input field (groot, prominent)
+  - CTA button: "Analyseer artikel"
+  
+- How-it-works sectie:
+  - 3 stappen visualisatie
+  - Animated demo van URL aanpassing
+  
+- Recent geanalyseerde artikelen carousel
+- Trust indicators (aantal analyses, accuracy rate)
+```
+
+#### 3.1.2 Functionaliteit
+- **Input validatie:** Alleen nu.nl URLs accepteren
+- **Auto-complete:** Suggesties tijdens typen
+- **Error handling:** Duidelijke foutmeldingen
+- **Loading state:** Skeleton screens tijdens laden
+
+### 3.2 URL Redirect Mechanisme
+
+#### 3.2.1 Technische Implementatie
+```javascript
+// Nginx rewrite rule voorbeeld
+location ~ ^/(.*)$ {
+    if ($host ~* ^www\.nukk\.nl$) {
+        # Extract path after nukk.nl
+        set $nu_url "https://www.nu.nl/$1";
+        return 301 /analyse?source=$nu_url;
+    }
+}
+```
+
+#### 3.2.2 Edge Cases
+- Handle www en non-www variants
+- Preserve query parameters
+- 404 handling voor niet-bestaande nu.nl artikelen
+
+### 3.3 Analyse Engine
+
+#### 3.3.1 Content Extraction
+```
+Pipeline:
+1. Fetch artikel via headless browser (Puppeteer)
+2. Extract:
+   - Titel
+   - Auteur
+   - Publicatiedatum
+   - Body text
+   - Afbeeldingen + captions
+3. Clean HTML, remove ads/navigation
+4. Store raw + cleaned versies
+```
+
+#### 3.3.2 AI Analyse Modules
+
+**Module 1: Subjectiviteitsdetectie**
+```
+Input: Artikel paragraaf
+Output: Score 0-100 + highlights
+Features:
+- Emotionele taal detectie
+- Superlatief gebruik
+- Speculatieve zinnen
+- Bronvermelding check
+```
+
+**Module 2: Feit vs. Mening Classificatie**
+```
+Categorieën:
+- FEIT: Verifieerbare uitspraak met bron
+- MENING: Persoonlijke interpretatie
+- SUGGESTIEF: Impliciete aanname
+- ONVOLLEDIG: Belangrijke context ontbreekt
+```
+
+**Module 3: Framing Analyse**
+```
+Detecteert:
+- Cherry-picking van data
+- Misleidende headlines
+- Context weglating
+- False balance
+```
+
+#### 3.3.3 Externe Verificatie
+- Wikipedia API voor feitenchecks
+- Google Fact Check API integratie
+- Archive.org voor historische claims
+- CBS/Statline voor Nederlandse statistieken
+
+### 3.4 Analysepagina UI/UX
+
+#### 3.4.1 Layout Structure
+```
+┌─────────────────────────────────────┐
+│  Original artikel link + meta info   │
+├─────────────────────────────────────┤
+│  Samenvattende score (0-100)        │
+│  ┌─────┬─────┬─────┬─────┐         │
+│  │Feit │Mening│Suggestief│Onvolledig│
+│  │ 45% │ 30% │  15%  │   10%    │  │
+│  └─────┴─────┴─────┴─────┘         │
+├─────────────────────────────────────┤
+│  Geanalyseerde tekst met:           │
+│  - Inline highlights                 │
+│  - Hover tooltips                   │
+│  - Bron links                       │
+├─────────────────────────────────────┤
+│  Feedback sectie                    │
+│  Advertisement block                │
+└─────────────────────────────────────┘
+```
+
+#### 3.4.2 Interactieve Features
+- **Highlight toggle:** Filter op type annotatie
+- **Bron expansie:** Click voor meer context
+- **Share functionaliteit:** Direct delen naar social
+- **PDF export:** Download analyse rapport
+
+### 3.5 Blog & Social Media Integratie
+
+#### 3.5.1 Automatische Blog Generatie
+```
+Template:
+---
+title: "Fact-check: [Artikel titel]"
+date: [ISO date]
+original_url: [nu.nl link]
+score: [objectiviteitsscore]
+tags: [auto-generated]
+---
+
+## Samenvatting
+[AI-gegenereerde samenvatting]
+
+## Belangrijkste bevindingen
+[Top 3 issues met voorbeelden]
+
+## Volledige analyse
+[Link naar interactieve versie]
+```
+
+#### 3.5.2 Twitter/X Bot
+```
+Post format:
+"📰 nu.nl: '[Controversiële quote]'
+🔍 Onze analyse: [Kort oordeel]
+📊 Objectiviteitsscore: X/100
+🔗 Lees meer: [kort.link]
+
+#factcheck #nunl #nieuws"
+```
+
+### 3.6 Advertentie Requirements
+
+#### 3.6.1 Ad Placements
+1. **Above the fold:** 728x90 leaderboard
+2. **Sidebar:** 300x250 medium rectangle
+3. **In-content:** Native ads tussen paragrafen
+4. **Footer:** 728x90 of 320x50 mobile
+
+#### 3.6.2 Implementation
+- Google AdSense primary
+- Fallback naar eigen inventory
+- Ad-block detectie met vriendelijk verzoek
+- GDPR-compliant consent management
+
+---
+
+## 4. Non-Functionele Requirements
+
+### 4.1 Performance
+- **Laadtijd homepage:** <2 seconden
+- **Analyse generatie:** <5 seconden
+- **API response time:** <200ms p95
+- **Concurrent users:** 1000+ gelijktijdig
+
+### 4.2 Beveiliging
+```
+- Rate limiting:
+  - Per IP: 20 requests/minuut
+  - Per API key: 100 requests/uur
+  
+- Input sanitization:
+  - XSS preventie
+  - SQL injection protection
+  - Path traversal checks
+  
+- Infrastructure:
+  - WAF implementatie
+  - DDoS protection (Cloudflare)
+  - Regular security audits
+```
+
+### 4.3 Schaalbaarheid
+- Horizontale scaling voor analyse workers
+- CDN voor statische assets
+- Database sharding voor analyses
+- Queue-based processing (Redis/RabbitMQ)
+
+### 4.4 Toegankelijkheid
+- WCAG 2.1 AA compliance
+- Screen reader optimalisatie
+- Keyboard navigatie
+- High contrast mode
+
+---
+
+## 5. Technische Architectuur
+
+### 5.1 Tech Stack
+```
+Frontend:
+- Framework: Next.js 14+
+- Styling: Tailwind CSS + Shadcn/ui
+- State: Zustand
+- Analytics: Plausible
+
+Backend:
+- Runtime: Node.js 20+
+- Framework: Fastify
+- Queue: Bull (Redis-based)
+- Cache: Redis
+
+AI/ML:
+- Primary: OpenAI GPT-4
+- Fallback: Claude 3
+- Fine-tuning: Custom BERT model
+
+Database:
+- Primary: PostgreSQL (Supabase)
+- Search: Elasticsearch
+- Cache: Redis
+
+Infrastructure:
+- Hosting: Vercel (frontend)
+- Compute: Google Cloud Run
+- Storage: Google Cloud Storage
+- CDN: Cloudflare
+```
+
+### 5.2 System Architecture
+```
+┌──────────────┐     ┌──────────────┐
+│   Browser    │────▶│  CDN/WAF     │
+└──────────────┘     └──────┬───────┘
+                            │
+                     ┌──────▼───────┐
+                     │   Next.js    │
+                     │   Frontend   │
+                     └──────┬───────┘
+                            │
+                     ┌──────▼───────┐
+                     │  API Gateway │
+                     └──────┬───────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+┌───────▼────────┐  ┌──────▼───────┐  ┌───────▼────────┐
+│ Analysis API   │  │  Blog API    │  │  Social API    │
+└───────┬────────┘  └──────┬───────┘  └───────┬────────┘
+        │                   │                   │
+┌───────▼────────┐  ┌──────▼───────┐  ┌───────▼────────┐
+│ AI Service     │  │  Database    │  │ Twitter Client │
+└────────────────┘  └──────────────┘  └────────────────┘
+```
+
+### 5.3 Database Schema
+```sql
+-- Core tables
+CREATE TABLE articles (
+    id UUID PRIMARY KEY,
+    nu_url TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    author TEXT,
+    published_at TIMESTAMP,
+    raw_content TEXT,
+    cleaned_content TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE analyses (
+    id UUID PRIMARY KEY,
+    article_id UUID REFERENCES articles(id),
+    objectivity_score INTEGER,
+    fact_percentage DECIMAL,
+    opinion_percentage DECIMAL,
+    suggestive_percentage DECIMAL,
+    incomplete_percentage DECIMAL,
+    ai_model TEXT,
+    processing_time_ms INTEGER,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE annotations (
+    id UUID PRIMARY KEY,
+    analysis_id UUID REFERENCES analyses(id),
+    text_start INTEGER,
+    text_end INTEGER,
+    annotation_type TEXT,
+    confidence DECIMAL,
+    explanation TEXT,
+    sources JSONB
+);
+
+CREATE TABLE user_feedback (
+    id UUID PRIMARY KEY,
+    analysis_id UUID REFERENCES analyses(id),
+    feedback_type TEXT,
+    comment TEXT,
+    user_ip_hash TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## 6. Development Roadmap
+
+### 6.1 MVP (Maand 1-2)
+- [x] Basic URL redirect functionaliteit
+- [x] Simpele AI analyse (alleen GPT-4)
+- [x] Basis UI zonder styling
+- [x] Manual blog posting
+
+### 6.2 Beta (Maand 3-4)
+- [ ] Volledige UI/UX implementatie
+- [ ] Automated blog generatie
+- [ ] Twitter integratie
+- [ ] Google AdSense setup
+- [ ] Performance optimalisatie
+
+### 6.3 Launch (Maand 5-6)
+- [ ] Marketing campagne
+- [ ] Premium features
+- [ ] Chrome extensie
+- [ ] Mobile app planning
+
+### 6.4 Post-Launch (Maand 7+)
+- [ ] Uitbreiding naar andere nieuwssites
+- [ ] AI model fine-tuning
+- [ ] Gebruiker accounts
+- [ ] API voor derden
+
+---
+
+## 7. Testing Strategy
+
+### 7.1 Test Types
+```
+Unit Tests:
+- Coverage target: 80%
+- Focus: Business logic, AI processing
+
+Integration Tests:
+- API endpoints
+- Database operations
+- External service mocks
+
+E2E Tests:
+- User journeys
+- Cross-browser testing
+- Performance benchmarks
+
+AI Validation:
+- Manual review sample: 100 artikelen
+- Accuracy threshold: 95%
+- Bias testing
+```
+
+### 7.2 Quality Assurance Process
+1. Automated testing in CI/CD
+2. Manual review van AI output
+3. Beta user feedback program
+4. A/B testing voor UX optimalisatie
+
+---
+
+## 8. Launch Strategy
+
+### 8.1 Pre-Launch (Week -4 tot 0)
+- Beta test met 50 gebruikers
+- Social media teasers
+- Press kit voorbereiden
+- Influencer outreach
+
+### 8.2 Launch Week
+- ProductHunt launch
+- Reddit posts (r/thenetherlands)
+- Twitter thread met examples
+- Email blast naar tech journalisten
+
+### 8.3 Post-Launch Growth
+- SEO optimalisatie
+- Content marketing (blog)
+- Viral mechanics (share buttons)
+- Referral program
+
+---
+
+## 9. Monitoring & Analytics
+
+### 9.1 Key Metrics Dashboard
+```
+Real-time:
+- Active users
+- Analyses per minuut
+- Error rate
+- API latency
+
+Daily:
+- Unique visitors
+- Conversion rate (visit → analyse)
+- Ad revenue
+- Social shares
+
+Weekly:
+- User retention
+- Feedback sentiment
+- AI accuracy trends
+- Cost per analyse
+```
+
+### 9.2 Alerting
+- Downtime > 1 minuut
+- Error rate > 5%
+- AI accuracy < 90%
+- Abnormal traffic patterns
+
+---
+
+## 10. Legal & Compliance
+
+### 10.1 Overwegingen
+- Fair use van nu.nl content
+- GDPR compliance
+- Cookie wetgeving
+- Advertentie richtlijnen
+
+### 10.2 Terms of Service
+- Geen garantie op 100% accuraatheid
+- Educational purpose disclaimer
+- User generated content policy
+- Copyright respecteren
+
+### 10.3 Privacy Policy
+- Minimale data collectie
+- Anonieme analytics
+- Opt-out mogelijkheden
+- Data retention: 90 dagen
+
+---
+
+## 11. Budget & Resources
+
+### 11.1 Development Costs (6 maanden)
+```
+Team:
+- 1 Full-stack developer: €60k
+- 1 AI engineer: €40k (part-time)
+- 1 Designer: €20k (contract)
+- 1 Product Manager: €30k (part-time)
+
+Infrastructure:
+- Hosting & CDN: €500/maand
+- AI API costs: €2000/maand
+- Monitoring tools: €200/maand
+
+Marketing:
+- Launch campaign: €5000
+- Ongoing ads: €500/maand
+
+Total: ~€180k
+```
+
+### 11.2 Revenue Projections
+```
+Maand 1-3: €0 (focus op groei)
+Maand 4-6: €500-1500/maand (ads)
+Maand 7-12: €2000-5000/maand (ads + premium)
+Break-even: Maand 10-12
+```
+
+---
+
+## 12. Risico's & Mitigatie
+
+### 12.1 Technische Risico's
+| Risico | Impact | Kans | Mitigatie |
+|--------|--------|------|-----------|
+| AI kosten explosie | Hoog | Medium | Rate limiting, caching |
+| nu.nl blokkeert scraping | Hoog | Laag | Legal gesprek, API deal |
+| DDoS aanvallen | Medium | Medium | Cloudflare, scaling |
+
+### 12.2 Business Risico's
+| Risico | Impact | Kans | Mitigatie |
+|--------|--------|------|-----------|
+| Lage adoptie | Hoog | Medium | Marketing push, viral features |
+| Negatieve pers | Medium | Laag | PR strategie, transparantie |
+| Competitor kopieert | Laag | Hoog | First mover advantage, brand |
+
+---
+
+## 13. Success Criteria
+
+### 13.1 Go/No-Go Criteria (Maand 3)
+- ✓ 1000+ actieve gebruikers
+- ✓ 95%+ AI accuracy
+- ✓ <5 sec processing tijd
+- ✓ Positieve user feedback (NPS > 40)
+
+### 13.2 Long-term Success (Jaar 1)
+- 50k+ maandelijkse gebruikers
+- €10k+ maandelijkse omzet
+- Chrome extensie met 10k+ installs
+- Erkend als autoriteit in fact-checking
+
+---
+
+## Appendices
+
+### A. Wireframes
+[Link naar Figma designs]
+
+### B. API Documentatie
+[Link naar Swagger/OpenAPI spec]
+
+### C. Brand Guidelines
+[Link naar style guide]
+
+### D. Competitive Analysis Detail
+[Link naar volledig rapport]
+
+---
+
+*Dit document is een levend document en wordt bijgewerkt naarmate het project vordert.*
