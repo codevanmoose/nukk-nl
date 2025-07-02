@@ -29,11 +29,11 @@ export class AIAnalyzer {
     }
     
     this.openai = new OpenAI({
-      apiKey: openaiKey || 'sk-demo-key-not-configured',
+      apiKey: openaiKey || 'sk-dummy-key-for-initialization',
     });
     
     this.anthropic = new Anthropic({
-      apiKey: anthropicKey || 'sk-ant-demo-key-not-configured',
+      apiKey: anthropicKey || 'sk-ant-dummy-key-for-initialization',
     });
 
     // Grok uses OpenAI-compatible API
@@ -49,10 +49,9 @@ export class AIAnalyzer {
     const startTime = Date.now();
     
     // Check if API keys are configured
-    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.includes('fake') || 
-        !process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.includes('fake')) {
+    if (!process.env.OPENAI_API_KEY || !process.env.ANTHROPIC_API_KEY) {
       // Return mock analysis for demonstration
-      console.log('Using mock analysis - API keys not properly configured');
+      console.log('Using mock analysis - API keys not configured');
       return this.getMockAnalysis(content, startTime);
     }
     
@@ -340,7 +339,7 @@ export class AIAnalyzer {
     ];
 
     return {
-      objectivity_score: 0.75,
+      objectivity_score: 75,
       fact_percentage: 65,
       opinion_percentage: 20,
       suggestive_percentage: 10,
