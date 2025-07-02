@@ -28,7 +28,11 @@
       "Bash(git push:*)",
       "Bash(read:*)",
       "Bash(chmod:*)",
-      "Bash(supabase:*)"
+      "Bash(supabase:*)",
+      "WebFetch(domain:nukk.nl)",
+      "WebFetch(domain:nukk-nl.vercel.app)",
+      "WebFetch(domain:www.nukk.nl)",
+      "Bash(nslookup:*)"
     ],
     "deny": []
   }
