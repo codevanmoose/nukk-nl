@@ -273,20 +273,20 @@ export class AIAnalyzer {
     }
 
     // Check percentages sum to 100 (allow small rounding errors)
-    const sum = analysis.fact_percentage + analysis.opinion_percentage + 
-                analysis.suggestive_percentage + analysis.incomplete_percentage;
+    const sum = (analysis.fact_percentage as number) + (analysis.opinion_percentage as number) + 
+                (analysis.suggestive_percentage as number) + (analysis.incomplete_percentage as number);
     
     if (Math.abs(sum - 100) > 1) {
       // Normalize percentages if they don't sum to 100
       const factor = 100 / sum;
-      analysis.fact_percentage = Math.round(analysis.fact_percentage * factor);
-      analysis.opinion_percentage = Math.round(analysis.opinion_percentage * factor);
-      analysis.suggestive_percentage = Math.round(analysis.suggestive_percentage * factor);
-      analysis.incomplete_percentage = 100 - analysis.fact_percentage - analysis.opinion_percentage - analysis.suggestive_percentage;
+      analysis.fact_percentage = Math.round((analysis.fact_percentage as number) * factor);
+      analysis.opinion_percentage = Math.round((analysis.opinion_percentage as number) * factor);
+      analysis.suggestive_percentage = Math.round((analysis.suggestive_percentage as number) * factor);
+      analysis.incomplete_percentage = 100 - (analysis.fact_percentage as number) - (analysis.opinion_percentage as number) - (analysis.suggestive_percentage as number);
     }
 
     // Ensure objectivity score is in valid range
-    analysis.objectivity_score = Math.max(0, Math.min(100, analysis.objectivity_score));
+    analysis.objectivity_score = Math.max(0, Math.min(100, analysis.objectivity_score as number));
 
     // Ensure annotations array exists
     if (!Array.isArray(analysis.annotations)) {
