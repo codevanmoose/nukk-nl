@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { render } from '@react-email/render';
 import WelcomeEmail from '@/emails/welcome-email';
 import PaymentConfirmationEmail from '@/emails/payment-confirmation';
@@ -6,7 +6,14 @@ import CampaignApprovedEmail from '@/emails/campaign-approved';
 import CampaignRejectedEmail from '@/emails/campaign-rejected';
 import NewsletterConfirmationEmail from '@/emails/newsletter-confirmation';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// AWS SES Client configuration
+const sesClient = new SESClient({
+  region: 'us-east-1',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
 
 export interface EmailOptions {
   to: string | string[];
@@ -56,22 +63,32 @@ class EmailService {
 
   async sendEmail(options: EmailOptions): Promise<boolean> {
     try {
-      const result = await resend.emails.send({
-        from: options.from || this.defaultFrom,
-        to: Array.isArray(options.to) ? options.to : [options.to],
-        subject: options.subject,
-        html: options.html
+      const toAddresses = Array.isArray(options.to) ? options.to : [options.to];
+      
+      const command = new SendEmailCommand({
+        Source: options.from || this.defaultFrom,
+        Destination: {
+          ToAddresses: toAddresses,
+        },
+        Message: {
+          Subject: {
+            Data: options.subject,
+            Charset: 'UTF-8',
+          },
+          Body: {
+            Html: {
+              Data: options.html,
+              Charset: 'UTF-8',
+            },
+          },
+        },
       });
 
-      if (result.error) {
-        console.error('Email send error:', result.error);
-        return false;
-      }
-
-      console.log('Email sent successfully:', result.data?.id);
+      const result = await sesClient.send(command);
+      console.log('Email sent successfully via SES:', result.MessageId);
       return true;
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error('Failed to send email via SES:', error);
       return false;
     }
   }
@@ -155,32 +172,47 @@ class EmailService {
     let sent = 0;
     let failed = 0;
 
-    // Send in batches to avoid rate limits
-    const batchSize = 50;
+    // Send in batches to comply with SES rate limits (14 emails/sec by default)
+    const batchSize = 10;
     
     for (let i = 0; i < recipients.length; i += batchSize) {
       const batch = recipients.slice(i, i + batchSize);
       
-      try {
-        const result = await resend.emails.send({
-          from: 'nukk.nl Newsletter <newsletter@nukk.nl>',
-          to: batch,
-          subject,
-          html: htmlContent
-        });
+      // Send emails in parallel within batch
+      const batchPromises = batch.map(async (recipient) => {
+        try {
+          const command = new SendEmailCommand({
+            Source: 'nukk.nl Newsletter <newsletter@nukk.nl>',
+            Destination: {
+              ToAddresses: [recipient],
+            },
+            Message: {
+              Subject: {
+                Data: subject,
+                Charset: 'UTF-8',
+              },
+              Body: {
+                Html: {
+                  Data: htmlContent,
+                  Charset: 'UTF-8',
+                },
+              },
+            },
+          });
 
-        if (result.error) {
-          console.error('Batch email error:', result.error);
-          failed += batch.length;
-        } else {
-          sent += batch.length;
+          await sesClient.send(command);
+          return true;
+        } catch (error) {
+          console.error(`Failed to send newsletter to ${recipient}:`, error);
+          return false;
         }
-      } catch (error) {
-        console.error('Failed to send batch:', error);
-        failed += batch.length;
-      }
+      });
 
-      // Rate limiting - wait between batches
+      const results = await Promise.all(batchPromises);
+      sent += results.filter(r => r).length;
+      failed += results.filter(r => !r).length;
+
+      // Rate limiting - wait between batches (SES allows ~14 emails/sec)
       if (i + batchSize < recipients.length) {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }

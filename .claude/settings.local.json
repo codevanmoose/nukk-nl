@@ -33,7 +33,18 @@
       "WebFetch(domain:nukk-nl.vercel.app)",
       "WebFetch(domain:www.nukk.nl)",
       "Bash(nslookup:*)",
-      "WebFetch(domain:wetransfer.com)"
+      "WebFetch(domain:wetransfer.com)",
+      "Bash(cat:*)",
+      "Bash(stripe login:*)",
+      "Bash(stripe account:*)",
+      "Bash(stripe config:*)",
+      "Bash(stripe webhooks list:*)",
+      "Bash(stripe help:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(aws ses get-account-sending-enabled:*)",
+      "Bash(aws ses list-verified-email-addresses:*)",
+      "Bash(aws ses list-identities:*)",
+      "Bash(aws ses verify-domain-identity:*)"
     ],
     "deny": []
   }
