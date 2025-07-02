@@ -42,12 +42,25 @@ function AnalyseContent() {
 
       const data = await response.json();
       
+      console.log('API Response:', { 
+        status: response.status, 
+        ok: response.ok,
+        hasError: !!data.error,
+        hasAnalysis: !!data.analysis
+      });
+      
       if (!response.ok) {
         throw new Error(data.error || 'Analyse mislukt');
       }
 
       if (data.error) {
         throw new Error(data.error);
+      }
+
+      // Check if we have valid analysis data
+      if (!data.analysis || typeof data.analysis.objectivity_score !== 'number') {
+        console.error('Invalid analysis data:', data);
+        throw new Error('Ongeldige analyse data ontvangen');
       }
 
       setAnalysis(data as AnalysisResponse);

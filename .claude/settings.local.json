@@ -53,7 +53,9 @@
       "Bash(sudo killall:*)",
       "Bash(cp:*)",
       "Bash(./fix-vercel-env.sh:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(open https://www.nukk.nl/politiek/6361052/asielwetten-lijken-te-stranden-in-eerste-kamer-cda-stemt-tegen.html)",
+      "Bash(open test-nukk-live.html)"
     ],
     "deny": []
   }

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test nukk.nl Live</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; cursor: pointer; }
+        iframe { width: 100%; height: 600px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>nukk.nl Live Test</h1>
+    
+    <div class="test">
+        <h2>Test 1: Direct URL Redirect</h2>
+        <p>Click to test nu.nl → nukk.nl redirect:</p>
+        <button onclick="window.open('https://www.nukk.nl/politiek/6361052/asielwetten-lijken-te-stranden-in-eerste-kamer-cda-stemt-tegen.html', '_blank')">
+            Open nukk.nl redirect
+        </button>
+    </div>
+    
+    <div class="test">
+        <h2>Test 2: Homepage Analysis</h2>
+        <p>Test the homepage with a nu.nl URL:</p>
+        <button onclick="window.open('https://www.nukk.nl', '_blank')">
+            Open Homepage
+        </button>
+    </div>
+    
+    <div class="test">
+        <h2>Test 3: Direct Analysis URL</h2>
+        <p>Go directly to analysis page:</p>
+        <button onclick="window.open('https://www.nukk.nl/analyse?url=https://www.nu.nl/economie/6321234/test-article.html', '_blank')">
+            Open Analysis Page
+        </button>
+    </div>
+    
+    <div class="test">
+        <h2>Test 4: Live Preview</h2>
+        <iframe src="https://www.nukk.nl"></iframe>
+    </div>
+</body>
+</html>
