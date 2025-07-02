@@ -49,8 +49,10 @@ export class AIAnalyzer {
     const startTime = Date.now();
     
     // Check if API keys are configured
-    if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.includes('fake') || 
+        !process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.includes('fake')) {
       // Return mock analysis for demonstration
+      console.log('Using mock analysis - API keys not properly configured');
       return this.getMockAnalysis(content, startTime);
     }
     
