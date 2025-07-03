@@ -246,82 +246,171 @@ export class CustomScraper {
   }
 
   private async scrapeWithFetch(url: string): Promise<ExtractedContent> {
-    try {
-      console.log(`Scraping with fetch: ${url}`);
-      
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-          'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'DNT': '1',
-          'Connection': 'keep-alive',
-          'Upgrade-Insecure-Requests': '1',
+    const maxRetries = 3;
+    let lastError: Error | null = null;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Scraping with fetch (attempt ${attempt}): ${url}`);
+        
+        const headers = this.getRandomHeaders();
+        console.log('Using User-Agent:', headers['User-Agent']);
+
+        const response = await fetch(url, {
+          headers,
+          redirect: 'follow',
+          referrer: 'https://www.google.com/',
+        });
+
+        if (!response.ok) {
+          if (response.status === 403 && attempt < maxRetries) {
+            console.log(`403 Forbidden, retrying with different headers (attempt ${attempt + 1})`);
+            await this.delay(1000 * attempt); // Progressive delay
+            continue;
+          }
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const html = await response.text();
+        return this.parseHtmlContent(html, url);
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Unknown error');
+        console.error(`Fetch attempt ${attempt} failed:`, lastError.message);
+        
+        if (attempt < maxRetries) {
+          await this.delay(2000 * attempt); // Progressive delay
+        }
       }
-
-      const html = await response.text();
-      return this.parseHtmlContent(html, url);
-    } catch (error) {
-      console.error('Fetch scraping failed:', error);
-      throw new Error(`Failed to scrape with fetch: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+
+    console.error('All fetch attempts failed:', lastError);
+    throw new Error(`Failed to scrape with fetch after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}`);
+  }
+
+  private getRandomHeaders(): Record<string, string> {
+    const userAgents = [
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    ];
+
+    const acceptLanguages = [
+      'nl-NL,nl;q=0.9,en;q=0.8',
+      'nl,en-US;q=0.9,en;q=0.8',
+      'nl-NL,nl;q=0.8,en-US;q=0.5,en;q=0.3',
+    ];
+
+    const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+    const randomAcceptLanguage = acceptLanguages[Math.floor(Math.random() * acceptLanguages.length)];
+
+    return {
+      'User-Agent': randomUserAgent,
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      'Accept-Language': randomAcceptLanguage,
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Upgrade-Insecure-Requests': '1',
+      'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"',
+    };
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private parseHtmlContent(html: string, url: string): ExtractedContent {
-    // Simple HTML parsing without DOM (for serverless environments)
+    console.log('Parsing HTML content, length:', html.length);
     
-    // Extract title
-    const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/is) ||
-                      html.match(/<h1[^>]*>(.*?)<\/h1>/is) ||
-                      html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]*)"[^>]*>/is);
+    // Extract title - nu.nl specific patterns
+    const titlePatterns = [
+      /<meta[^>]+property="og:title"[^>]+content="([^"]*)"[^>]*>/is,
+      /<title[^>]*>([^<]*)<\/title>/is,
+      /<h1[^>]*class="[^"]*headline[^"]*"[^>]*>([^<]*)<\/h1>/is,
+      /<h1[^>]*>([^<]*)<\/h1>/is,
+    ];
     
     let title = 'Untitled Article';
-    if (titleMatch) {
-      title = this.decodeHtml(titleMatch[1]).replace(/\s+/g, ' ').trim();
+    for (const pattern of titlePatterns) {
+      const match = html.match(pattern);
+      if (match && match[1].trim()) {
+        title = this.decodeHtml(match[1]).replace(/\s+/g, ' ').trim();
+        // Remove "NU.nl" suffix if present
+        title = title.replace(/\s*-\s*NU\.nl\s*$/i, '').trim();
+        break;
+      }
     }
 
-    // Extract author
-    const authorMatch = html.match(/class="author[^"]*"[^>]*>(.*?)<\/[^>]+>/is) ||
-                       html.match(/door\s+([^<\n]+)/i) ||
-                       html.match(/<meta[^>]+name="author"[^>]+content="([^"]*)"[^>]*>/is);
+    // Extract author - nu.nl specific patterns
+    const authorPatterns = [
+      /class="[^"]*author[^"]*"[^>]*>([^<]+)<\/[^>]+>/is,
+      /door\s+([^<\n\r]+)/i,
+      /<meta[^>]+name="author"[^>]+content="([^"]*)"[^>]*>/is,
+      /redactie[^<]*:\s*([^<\n\r]+)/i,
+    ];
     
     let author: string | null = null;
-    if (authorMatch) {
-      author = this.decodeHtml(authorMatch[1]).trim();
+    for (const pattern of authorPatterns) {
+      const match = html.match(pattern);
+      if (match && match[1].trim()) {
+        author = this.decodeHtml(match[1]).trim();
+        break;
+      }
     }
 
     // Extract publish date
-    const dateMatch = html.match(/<time[^>]*datetime="([^"]+)"/i) ||
-                     html.match(/<meta[^>]+property="article:published_time"[^>]+content="([^"]*)"[^>]*>/is);
+    const datePatterns = [
+      /<meta[^>]+property="article:published_time"[^>]+content="([^"]*)"[^>]*>/is,
+      /<time[^>]*datetime="([^"]+)"/i,
+      /<meta[^>]+name="date"[^>]+content="([^"]*)"[^>]*>/is,
+    ];
     
     let publishedAt = new Date();
-    if (dateMatch) {
-      publishedAt = new Date(dateMatch[1]);
+    for (const pattern of datePatterns) {
+      const match = html.match(pattern);
+      if (match && match[1]) {
+        try {
+          publishedAt = new Date(match[1]);
+          if (!isNaN(publishedAt.getTime())) break;
+        } catch (e) {
+          // Continue to next pattern
+        }
+      }
     }
 
-    // Extract content - look for article body
-    const contentMatches = [
-      html.match(/<article[^>]*>(.*?)<\/article>/is),
-      html.match(/class="article-body[^"]*"[^>]*>(.*?)<\/div>/is),
-      html.match(/class="content[^"]*"[^>]*>(.*?)<\/div>/is),
+    // Extract content - nu.nl specific patterns
+    const contentPatterns = [
+      // Try to find main article content
+      /<article[^>]*>(.*?)<\/article>/is,
+      /class="[^"]*article-body[^"]*"[^>]*>(.*?)<\/div>/is,
+      /class="[^"]*content[^"]*"[^>]*>(.*?)<\/div>/is,
+      /data-testid="article-body"[^>]*>(.*?)<\/div>/is,
+      // Fallback to main content area
+      /<main[^>]*>(.*?)<\/main>/is,
     ];
 
     let rawContent = '';
-    for (const match of contentMatches) {
-      if (match) {
+    for (const pattern of contentPatterns) {
+      const match = html.match(pattern);
+      if (match && match[1].trim()) {
         rawContent = match[1];
+        console.log('Found content using pattern:', pattern.source.substring(0, 50) + '...');
         break;
       }
     }
 
     if (!rawContent) {
-      // Fallback: try to extract text between common patterns
+      console.log('No content found with specific patterns, trying fallback');
+      // Fallback: extract everything and filter later
       const bodyMatch = html.match(/<body[^>]*>(.*?)<\/body>/is);
       if (bodyMatch) {
         rawContent = bodyMatch[1];
@@ -337,12 +426,22 @@ export class CustomScraper {
       .replace(/<footer[^>]*>.*?<\/footer>/gis, '')
       .replace(/<header[^>]*>.*?<\/header>/gis, '')
       .replace(/class="[^"]*ad[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
+      .replace(/class="[^"]*advertisement[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
+      .replace(/class="[^"]*social[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
+      .replace(/class="[^"]*share[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
+      .replace(/class="[^"]*related[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
 
     rawContent = this.decodeHtml(rawContent);
     const cleanedContent = this.cleanContent(rawContent);
+
+    console.log('Parsed content:', {
+      title: title.substring(0, 100),
+      author,
+      contentLength: cleanedContent.length
+    });
 
     return {
       title,
