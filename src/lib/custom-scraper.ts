@@ -7,6 +7,16 @@ export class CustomScraper {
   async initialize() {
     if (this.browser) return;
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = !!process.env.VERCEL;
+
+    if (isVercel || isProduction) {
+      // For serverless environments, use a simpler approach
+      console.log('Serverless environment detected, skipping Puppeteer initialization');
+      return;
+    }
+
+    // Only use Puppeteer in local development
     this.browser = await puppeteer.launch({
       headless: 'new',
       args: [
@@ -25,7 +35,6 @@ export class CustomScraper {
         '--disable-blink-features=AutomationControlled',
         '--disable-web-security',
         '--disable-features=VizDisplayCompositor',
-        // Anti-detection
         '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       ],
     });
@@ -34,8 +43,12 @@ export class CustomScraper {
   async scrapeNuNl(url: string): Promise<ExtractedContent> {
     await this.initialize();
     
-    if (!this.browser) {
-      throw new Error('Failed to initialize browser');
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isVercel = !!process.env.VERCEL;
+
+    if (isVercel || isProduction || !this.browser) {
+      // Use simple fetch approach for serverless environments
+      return this.scrapeWithFetch(url);
     }
 
     const page = await this.browser.newPage();
@@ -230,6 +243,127 @@ export class CustomScraper {
     } finally {
       await page.close();
     }
+  }
+
+  private async scrapeWithFetch(url: string): Promise<ExtractedContent> {
+    try {
+      console.log(`Scraping with fetch: ${url}`);
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+          'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const html = await response.text();
+      return this.parseHtmlContent(html, url);
+    } catch (error) {
+      console.error('Fetch scraping failed:', error);
+      throw new Error(`Failed to scrape with fetch: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  private parseHtmlContent(html: string, url: string): ExtractedContent {
+    // Simple HTML parsing without DOM (for serverless environments)
+    
+    // Extract title
+    const titleMatch = html.match(/<title[^>]*>(.*?)<\/title>/is) ||
+                      html.match(/<h1[^>]*>(.*?)<\/h1>/is) ||
+                      html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]*)"[^>]*>/is);
+    
+    let title = 'Untitled Article';
+    if (titleMatch) {
+      title = this.decodeHtml(titleMatch[1]).replace(/\s+/g, ' ').trim();
+    }
+
+    // Extract author
+    const authorMatch = html.match(/class="author[^"]*"[^>]*>(.*?)<\/[^>]+>/is) ||
+                       html.match(/door\s+([^<\n]+)/i) ||
+                       html.match(/<meta[^>]+name="author"[^>]+content="([^"]*)"[^>]*>/is);
+    
+    let author: string | null = null;
+    if (authorMatch) {
+      author = this.decodeHtml(authorMatch[1]).trim();
+    }
+
+    // Extract publish date
+    const dateMatch = html.match(/<time[^>]*datetime="([^"]+)"/i) ||
+                     html.match(/<meta[^>]+property="article:published_time"[^>]+content="([^"]*)"[^>]*>/is);
+    
+    let publishedAt = new Date();
+    if (dateMatch) {
+      publishedAt = new Date(dateMatch[1]);
+    }
+
+    // Extract content - look for article body
+    const contentMatches = [
+      html.match(/<article[^>]*>(.*?)<\/article>/is),
+      html.match(/class="article-body[^"]*"[^>]*>(.*?)<\/div>/is),
+      html.match(/class="content[^"]*"[^>]*>(.*?)<\/div>/is),
+    ];
+
+    let rawContent = '';
+    for (const match of contentMatches) {
+      if (match) {
+        rawContent = match[1];
+        break;
+      }
+    }
+
+    if (!rawContent) {
+      // Fallback: try to extract text between common patterns
+      const bodyMatch = html.match(/<body[^>]*>(.*?)<\/body>/is);
+      if (bodyMatch) {
+        rawContent = bodyMatch[1];
+      }
+    }
+
+    // Clean HTML tags and decode entities
+    rawContent = rawContent
+      .replace(/<script[^>]*>.*?<\/script>/gis, '')
+      .replace(/<style[^>]*>.*?<\/style>/gis, '')
+      .replace(/<nav[^>]*>.*?<\/nav>/gis, '')
+      .replace(/<aside[^>]*>.*?<\/aside>/gis, '')
+      .replace(/<footer[^>]*>.*?<\/footer>/gis, '')
+      .replace(/<header[^>]*>.*?<\/header>/gis, '')
+      .replace(/class="[^"]*ad[^"]*"[^>]*>.*?<\/[^>]+>/gis, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    rawContent = this.decodeHtml(rawContent);
+    const cleanedContent = this.cleanContent(rawContent);
+
+    return {
+      title,
+      author,
+      publishedAt,
+      rawContent,
+      cleanedContent,
+    };
+  }
+
+  private decodeHtml(html: string): string {
+    return html
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'")
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&#8217;/g, "'")
+      .replace(/&#8220;/g, '"')
+      .replace(/&#8221;/g, '"');
   }
 
   private cleanContent(content: string): string {
