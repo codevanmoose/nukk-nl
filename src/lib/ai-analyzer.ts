@@ -387,107 +387,13 @@ export class AIAnalyzer {
       analysis.annotations = [];
     }
     
-    // If no annotations but we have content, generate basic ones
-    if (analysis.annotations.length === 0 && typeof analysis.objectivity_score === 'number') {
-      console.log('No annotations from AI, generating basic annotations...');
-      // This ensures we always have some annotations for demonstration
-      analysis.annotations = this.generateBasicAnnotations(analysis);
+    // Ensure annotations array exists but don't generate fake ones
+    if (analysis.annotations.length === 0) {
+      console.warn('AI returned no annotations for this article');
     }
   }
 
-  private generateBasicAnnotations(analysis: Record<string, unknown>): any[] {
-    // Generate basic annotations based on the analysis scores
-    const annotations = [];
-    const score = analysis.objectivity_score as number;
-    
-    if (score < 80) {
-      annotations.push({
-        type: 'opinion',
-        text: 'subjectieve',
-        reasoning: 'Algemene indicatie van subjectiviteit in het artikel',
-        confidence: 0.7,
-        start_index: 0,
-        end_index: 10
-      });
-    }
-    
-    if (score > 60) {
-      annotations.push({
-        type: 'fact',
-        text: 'feitelijke',
-        reasoning: 'Algemene indicatie van feitelijke berichtgeving',
-        confidence: 0.8,
-        start_index: 0,
-        end_index: 10
-      });
-    }
-    
-    return annotations;
-  }
 
-  private getMockAnalysis(content: ExtractedContent, startTime: number, modelName?: string): AnalysisResult {
-    // Generate realistic mock analysis for demonstration
-    const text = content.cleanedContent;
-    const annotations: AnalysisResult['annotations'] = [];
-
-    // Find actual text snippets in the content
-    const findAndAnnotate = (searchText: string, type: Annotation['type'], reasoning: string, confidence: number) => {
-      const index = text.indexOf(searchText);
-      if (index !== -1) {
-        annotations.push({
-          type,
-          text: searchText,
-          reasoning,
-          confidence,
-          start_index: index,
-          end_index: index + searchText.length
-        });
-      }
-    };
-
-    // Look for common patterns in Dutch news articles
-    findAndAnnotate('essentieel', 'opinion', 'Het woord "essentieel" is een subjectieve kwalificatie', 0.85);
-    findAndAnnotate('cruciaal', 'opinion', 'Het woord "cruciaal" is een waardeoordeel', 0.85);
-    findAndAnnotate('volgens', 'fact', 'Verwijzing naar een bron of autoriteit', 0.90);
-    findAndAnnotate('Volgens', 'fact', 'Verwijzing naar een bron of autoriteit', 0.90);
-    findAndAnnotate('CBS', 'fact', 'Verwijzing naar officiële instantie (Centraal Bureau voor de Statistiek)', 0.95);
-    findAndAnnotate('beweren', 'suggestive', 'Het woord "beweren" impliceert twijfel over de waarheid', 0.80);
-    findAndAnnotate('mogelijk', 'incomplete', 'Onzekerheid over de informatie', 0.75);
-    findAndAnnotate('minister', 'fact', 'Verwijzing naar een officiële functie', 0.85);
-    findAndAnnotate('verklaarde', 'fact', 'Feitelijke handeling van een uitspraak', 0.80);
-    findAndAnnotate('critici', 'opinion', 'Verwijzing naar tegenstanders zonder specifieke bronnen', 0.75);
-
-    // Add slight variations based on model
-    let scores = {
-      objectivity_score: 75,
-      fact_percentage: 65,
-      opinion_percentage: 20,
-      suggestive_percentage: 10,
-      incomplete_percentage: 5
-    };
-    
-    // Vary scores slightly by model for realistic comparison
-    if (modelName?.includes('claude')) {
-      scores.objectivity_score = 72;
-      scores.fact_percentage = 62;
-      scores.opinion_percentage = 22;
-    } else if (modelName?.includes('gemini')) {
-      scores.objectivity_score = 78;
-      scores.fact_percentage = 68;
-      scores.opinion_percentage = 18;
-    } else if (modelName?.includes('grok')) {
-      scores.objectivity_score = 73;
-      scores.fact_percentage = 64;
-      scores.opinion_percentage = 21;
-    }
-    
-    return {
-      ...scores,
-      annotations: annotations.slice(0, 5), // Limit to 5 annotations
-      processing_time_ms: Date.now() - startTime,
-      ai_model: modelName || 'mock-demo'
-    };
-  }
 }
 
 // Singleton instance

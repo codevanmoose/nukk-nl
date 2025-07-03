@@ -1,4 +1,5 @@
 import { getScrapingService } from './scraping-service';
+import { JSDOM } from 'jsdom';
 
 export interface ExtractedContent {
   title: string;
