@@ -220,6 +220,60 @@ PFAS zijn chemische stoffen die worden gebruikt in allerlei producten, van antia
 
 Het ministerie overweegt strengere maatregelen tegen PFAS-gebruik. Gezondheidseffecten kunnen onder meer verminderde vruchtbaarheid en verhoogd cholesterol zijn.`
       },
+      'kreta': {
+        title: 'Honderden bewoners en toeristen geëvacueerd vanwege natuurbrand op Kreta',
+        author: 'Sophie van der Meer',
+        publishedAt: new Date(),
+        rawContent: `Honderden bewoners en toeristen zijn geëvacueerd vanwege een grote natuurbrand op het Griekse eiland Kreta. De brand woedt sinds zaterdagmiddag in de buurt van het dorp Keramia in het noordoosten van het eiland.
+
+De lokale autoriteiten melden dat zeker 300 mensen hun huizen hebben moeten verlaten. Ook zijn twee hotels met in totaal 150 gasten preventief ontruimd. "De situatie is zeer ernstig", aldus een woordvoerder van de brandweer.
+
+Volgens meteorologen zijn de weersomstandigheden uiterst ongunstig. Er staat een krachtige wind en de temperatuur loopt op tot boven de 38 graden Celsius. "Dit zijn ideale omstandigheden voor de verspreiding van bosbranden", zegt weerman Dimitris Papadopoulos.
+
+De Griekse premier heeft het leger ingezet om te helpen bij de bestrijding van de brand. Vanuit Athene zijn extra blusvliegtuigen en helikopters onderweg. Ook hebben buurlanden Cyprus en Italië hulp aangeboden.
+
+Tot nu toe zijn er geen gewonden gemeld. Wel is minstens één huis door de vlammen verwoest. De schade aan de natuur is volgens eerste schattingen aanzienlijk. Het getroffen gebied staat bekend om zijn unieke flora en fauna.
+
+De brandweer waarschuwt dat het nog dagen kan duren voordat de brand volledig onder controle is. Bewoners en toeristen in de omgeving wordt geadviseerd alert te blijven en instructies van de autoriteiten op te volgen.`,
+        cleanedContent: `Honderden bewoners en toeristen zijn geëvacueerd vanwege een grote natuurbrand op het Griekse eiland Kreta. De brand woedt sinds zaterdagmiddag in de buurt van het dorp Keramia in het noordoosten van het eiland.
+
+De lokale autoriteiten melden dat zeker 300 mensen hun huizen hebben moeten verlaten. Ook zijn twee hotels met in totaal 150 gasten preventief ontruimd. "De situatie is zeer ernstig", aldus een woordvoerder van de brandweer.
+
+Volgens meteorologen zijn de weersomstandigheden uiterst ongunstig. Er staat een krachtige wind en de temperatuur loopt op tot boven de 38 graden Celsius. "Dit zijn ideale omstandigheden voor de verspreiding van bosbranden", zegt weerman Dimitris Papadopoulos.
+
+De Griekse premier heeft het leger ingezet om te helpen bij de bestrijding van de brand. Vanuit Athene zijn extra blusvliegtuigen en helikopters onderweg. Ook hebben buurlanden Cyprus en Italië hulp aangeboden.
+
+Tot nu toe zijn er geen gewonden gemeld. Wel is minstens één huis door de vlammen verwoest. De schade aan de natuur is volgens eerste schattingen aanzienlijk. Het getroffen gebied staat bekend om zijn unieke flora en fauna.
+
+De brandweer waarschuwt dat het nog dagen kan duren voordat de brand volledig onder controle is. Bewoners en toeristen in de omgeving wordt geadviseerd alert te blijven en instructies van de autoriteiten op te volgen.`
+      },
+      'natuurbrand': {
+        title: 'Honderden bewoners en toeristen geëvacueerd vanwege natuurbrand op Kreta',
+        author: 'Sophie van der Meer',
+        publishedAt: new Date(),
+        rawContent: `Honderden bewoners en toeristen zijn geëvacueerd vanwege een grote natuurbrand op het Griekse eiland Kreta. De brand woedt sinds zaterdagmiddag in de buurt van het dorp Keramia in het noordoosten van het eiland.
+
+De lokale autoriteiten melden dat zeker 300 mensen hun huizen hebben moeten verlaten. Ook zijn twee hotels met in totaal 150 gasten preventief ontruimd. "De situatie is zeer ernstig", aldus een woordvoerder van de brandweer.
+
+Volgens meteorologen zijn de weersomstandigheden uiterst ongunstig. Er staat een krachtige wind en de temperatuur loopt op tot boven de 38 graden Celsius. "Dit zijn ideale omstandigheden voor de verspreiding van bosbranden", zegt weerman Dimitris Papadopoulos.
+
+De Griekse premier heeft het leger ingezet om te helpen bij de bestrijding van de brand. Vanuit Athene zijn extra blusvliegtuigen en helikopters onderweg. Ook hebben buurlanden Cyprus en Italië hulp aangeboden.
+
+Tot nu toe zijn er geen gewonden gemeld. Wel is minstens één huis door de vlammen verwoest. De schade aan de natuur is volgens eerste schattingen aanzienlijk. Het getroffen gebied staat bekend om zijn unieke flora en fauna.
+
+De brandweer waarschuwt dat het nog dagen kan duren voordat de brand volledig onder controle is. Bewoners en toeristen in de omgeving wordt geadviseerd alert te blijven en instructies van de autoriteiten op te volgen.`,
+        cleanedContent: `Honderden bewoners en toeristen zijn geëvacueerd vanwege een grote natuurbrand op het Griekse eiland Kreta. De brand woedt sinds zaterdagmiddag in de buurt van het dorp Keramia in het noordoosten van het eiland.
+
+De lokale autoriteiten melden dat zeker 300 mensen hun huizen hebben moeten verlaten. Ook zijn twee hotels met in totaal 150 gasten preventief ontruimd. "De situatie is zeer ernstig", aldus een woordvoerder van de brandweer.
+
+Volgens meteorologen zijn de weersomstandigheden uiterst ongunstig. Er staat een krachtige wind en de temperatuur loopt op tot boven de 38 graden Celsius. "Dit zijn ideale omstandigheden voor de verspreiding van bosbranden", zegt weerman Dimitris Papadopoulos.
+
+De Griekse premier heeft het leger ingezet om te helpen bij de bestrijding van de brand. Vanuit Athene zijn extra blusvliegtuigen en helikopters onderweg. Ook hebben buurlanden Cyprus en Italië hulp aangeboden.
+
+Tot nu toe zijn er geen gewonden gemeld. Wel is minstens één huis door de vlammen verwoest. De schade aan de natuur is volgens eerste schattingen aanzienlijk. Het getroffen gebied staat bekend om zijn unieke flora en fauna.
+
+De brandweer waarschuwt dat het nog dagen kan duren voordat de brand volledig onder controle is. Bewoners en toeristen in de omgeving wordt geadviseerd alert te blijven en instructies van de autoriteiten op te volgen.`
+      },
       'default': {
         title: slug.split('-').map(word => 
           word.charAt(0).toUpperCase() + word.slice(1)
