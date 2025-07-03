@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse } from '@/types';
-import { ArrowLeft, ExternalLink, Loader2 } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Loader2, Brain, Sparkles, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { AnalysisHighlights } from '@/components/analysis-highlights';
+import { MultiModelAnalysis } from '@/components/multi-model-analysis';
 
 function AnalyseContent() {
   const searchParams = useSearchParams();
@@ -17,6 +18,8 @@ function AnalyseContent() {
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showMultiModel, setShowMultiModel] = useState(false);
+  const [multiModelAnalyses, setMultiModelAnalyses] = useState<any[]>([]);
 
   useEffect(() => {
     if (url && isValidNuUrl(url)) {
@@ -69,6 +72,41 @@ function AnalyseContent() {
       setError(err instanceof Error ? err.message : 'Er is een fout opgetreden');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchMultiModelAnalyses = async () => {
+    if (!url) return;
+    
+    try {
+      const normalizedUrl = normalizeNuUrl(url);
+      const response = await fetch('/api/analyze-multi', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          url: normalizedUrl,
+          models: ['openai', 'anthropic', 'gemini']
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.analyses) {
+        const formattedAnalyses = data.analyses.map((item: any) => ({
+          model: item.model === 'openai' ? 'gpt-4' : item.model === 'anthropic' ? 'claude-3' : 'gemini',
+          provider: item.model === 'openai' ? 'OpenAI' : item.model === 'anthropic' ? 'Anthropic' : 'Google',
+          icon: item.model === 'openai' ? <Brain className="w-4 h-4" /> : 
+                item.model === 'anthropic' ? <Sparkles className="w-4 h-4" /> : 
+                <Zap className="w-4 h-4" />,
+          analysis: item.analysis,
+          annotations: item.annotations || []
+        }));
+        setMultiModelAnalyses(formattedAnalyses);
+      }
+    } catch (error) {
+      console.error('Failed to fetch multi-model analyses:', error);
     }
   };
 
@@ -162,6 +200,47 @@ function AnalyseContent() {
             </div>
           </div>
         </div>
+
+        {/* Multi-Model Toggle */}
+        <Card className="p-4 bg-blue-50 border-blue-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Brain className="w-5 h-5 text-blue-600" />
+              <div>
+                <h3 className="font-medium">Vergelijk AI Modellen</h3>
+                <p className="text-sm text-muted-foreground">
+                  Zie hoe verschillende AI's dit artikel analyseren
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant={showMultiModel ? "default" : "outline"}
+              size="sm"
+              onClick={async () => {
+                if (!showMultiModel && multiModelAnalyses.length === 0) {
+                  await fetchMultiModelAnalyses();
+                }
+                setShowMultiModel(!showMultiModel);
+              }}
+            >
+              {showMultiModel ? 'Verberg vergelijking' : 'Toon vergelijking'}
+            </Button>
+          </div>
+        </Card>
+
+        {/* Multi-Model Analysis */}
+        {showMultiModel && multiModelAnalyses.length > 0 && (
+          <MultiModelAnalysis analyses={multiModelAnalyses} />
+        )}
+        
+        {showMultiModel && multiModelAnalyses.length === 0 && (
+          <Card className="p-6">
+            <div className="flex items-center justify-center space-x-2">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span className="text-muted-foreground">Multi-model analyses laden...</span>
+            </div>
+          </Card>
+        )}
 
         {/* Analysis Summary */}
         <Card>
