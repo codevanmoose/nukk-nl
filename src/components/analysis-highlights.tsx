@@ -127,13 +127,8 @@ export function AnalysisHighlights({ text, annotations }: AnalysisHighlightsProp
         ))}
       </div>
 
-      {/* Highlighted text */}
-      <div className="p-6 bg-white rounded-lg border">
-        {renderHighlightedText()}
-      </div>
-
       {/* Annotation details */}
-      {annotations.length > 0 && (
+      {annotations.length > 0 ? (
         <div className="space-y-2">
           <h4 className="text-sm font-medium text-gray-700">Gedetailleerde bevindingen:</h4>
           <div className="space-y-2">
@@ -165,6 +160,10 @@ export function AnalysisHighlights({ text, annotations }: AnalysisHighlightsProp
               </div>
             ))}
           </div>
+        </div>
+      ) : (
+        <div className="text-center py-8 text-muted-foreground">
+          <p className="text-sm">Geen specifieke bevindingen voor dit artikel.</p>
         </div>
       )}
     </div>
