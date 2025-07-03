@@ -8,7 +8,7 @@ export interface ExtractedContent {
 
 export class ScrapingService {
   private config: {
-    provider: 'custom' | 'scrapingbee' | 'browserless';
+    provider: 'custom' | 'scrapingbee' | 'scrapfly' | 'browserless';
     apiKey: string | null;
   };
 
@@ -36,6 +36,17 @@ export class ScrapingService {
           return await this.scrapeWithScrapingBee(url);
         } catch (scrapingBeeError) {
           console.error('ScrapingBee fallback failed:', scrapingBeeError);
+        }
+      }
+      
+      // Fallback to ScrapFly if available
+      if (process.env.SCRAPFLY_API_KEY) {
+        try {
+          console.log('Falling back to ScrapFly...');
+          this.config = { provider: 'scrapfly', apiKey: process.env.SCRAPFLY_API_KEY };
+          return await this.scrapeWithScrapFly(url);
+        } catch (scrapFlyError) {
+          console.error('ScrapFly fallback failed:', scrapFlyError);
         }
       }
       
@@ -86,6 +97,34 @@ export class ScrapingService {
     } catch (error) {
       console.error('ScrapingBee failed:', error);
       throw new Error('Failed to scrape article with ScrapingBee');
+    }
+  }
+
+  private async scrapeWithScrapFly(url: string): Promise<ExtractedContent> {
+    const apiUrl = new URL('https://api.scrapfly.io/scrape');
+    apiUrl.searchParams.append('key', this.config.apiKey!);
+    apiUrl.searchParams.append('url', url);
+    apiUrl.searchParams.append('render_js', 'true');
+    apiUrl.searchParams.append('country', 'NL');
+    apiUrl.searchParams.append('format', 'json');
+
+    try {
+      const response = await fetch(apiUrl.toString());
+      if (!response.ok) {
+        throw new Error(`ScrapFly error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      const html = result.result?.content || '';
+      
+      if (!html) {
+        throw new Error('No content received from ScrapFly');
+      }
+
+      return this.parseNuNlHtml(html, url);
+    } catch (error) {
+      console.error('ScrapFly failed:', error);
+      throw new Error('Failed to scrape article with ScrapFly');
     }
   }
 
