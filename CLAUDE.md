@@ -6,6 +6,12 @@ Building nukk.nl - an AI-powered fact-checking platform for nu.nl articles that 
 ## 🚀 Current Status: PRODUCTION READY ✅
 Full-featured AI fact-checking platform deployed and operational at https://nukk.nl!
 
+## 📋 Recent Changes (Jan 2025)
+- **Simplified scraping architecture**: Removed custom Puppeteer, ScrapingBee, and Browserless
+- **ScrapFly-only implementation**: Now using ScrapFly as the sole scraping service
+- **Enhanced reliability**: No more 403 errors or complex fallback chains
+- **API key configured**: ScrapFly API key active in production
+
 ## Development Commands
 ```bash
 # Install dependencies
@@ -38,8 +44,8 @@ npm run build
 - **Backend**: Next.js API Routes, Node.js 20+
 - **AI**: OpenAI GPT-4, Anthropic Claude 3, xAI Grok (multi-model analysis)
 - **Database**: PostgreSQL (Supabase)
-- **Web Scraping**: Custom Puppeteer scraper (Dutch-optimized)
-- **Infrastructure**: Vercel (production), Custom scraper (zero external costs)
+- **Web Scraping**: ScrapFly service (1,000 free requests/month)
+- **Infrastructure**: Vercel (production), ScrapFly (free tier)
 
 ## ✅ COMPLETED PRODUCTION FEATURES
 
@@ -52,7 +58,7 @@ npm run build
 
 ### Phase 2: Core Functionality ✅
 - ✅ Homepage with URL input validation
-- ✅ Custom Puppeteer web scraper (Dutch-optimized, anti-detection)
+- ✅ Professional web scraping with ScrapFly
 - ✅ AI analysis engine (OpenAI + Anthropic + Grok)
 - ✅ Multi-model AI comparison feature
 - ✅ URL redirect system (nukk.nl/path → analysis)
@@ -71,7 +77,7 @@ npm run build
 - ✅ Multi-model comparison tabs
 
 ### Phase 4: Production Deployment ✅
-- ✅ Custom Puppeteer scraper (no external API costs)
+- ✅ ScrapFly integration (1,000 free requests/month)
 - ✅ All demo content removed
 - ✅ Real API keys configured in production
 - ✅ Production-ready error handling
@@ -83,7 +89,7 @@ npm run build
 - **Vercel Deployment**: ✅ Auto-deployment active
 - **Database**: ✅ Supabase PostgreSQL operational
 - **API Keys**: ✅ OpenAI, Anthropic, xAI configured
-- **Web Scraping**: ✅ Custom Puppeteer scraper operational
+- **Web Scraping**: ✅ ScrapFly service operational
 - **Build Status**: ✅ All errors resolved
 
 ## 🏗️ Implementation Details
@@ -211,6 +217,9 @@ Features available:
 ## API Keys Setup (For Local Development)
 See `setup-api-keys.md` for local environment configuration.
 Production API keys are already configured in Vercel.
+
+## 📋 Next Steps
+See `TODO.md` for upcoming tasks and future enhancements.
 
 ## Production Infrastructure
 - **Production URL**: https://nukk.nl
