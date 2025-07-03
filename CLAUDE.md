@@ -157,8 +157,10 @@ src/
 
 ## 🎯 PRODUCTION FEATURES
 
-### ✅ Web Scraping (Zero Cost)
-- **Custom Puppeteer scraper** - No external API fees
+### ✅ Web Scraping (Resilient Fallback System)
+- **Custom Puppeteer scraper** - Primary method, zero external API costs
+- **ScrapingBee fallback** - Automatic fallback for 403/blocking errors
+- **Browserless fallback** - Secondary fallback option
 - **Dutch optimization** - Amsterdam geolocation, nl-NL locale
 - **Anti-detection** - Realistic browser fingerprinting
 - **JavaScript rendering** - Handles dynamic content
@@ -180,12 +182,13 @@ src/
 
 ## Key Production Considerations
 - ✅ Real API keys configured (no demo content)
-- ✅ Custom scraper eliminates external costs
+- ✅ Resilient scraping with automatic fallbacks
 - ✅ Multi-model AI provides reliability through consensus
 - ✅ Proper error handling for production environment
 - ✅ Mobile-responsive design
 - ✅ Fast page load times (<2 seconds)
 - ✅ GDPR-compliant data handling
+- ✅ Cost optimization (custom scraper first, external services as fallback)
 
 ## Testing Checklist ✅
 - ✅ All API endpoints return real data

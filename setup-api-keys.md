@@ -19,6 +19,10 @@ With your real API keys:
 OPENAI_API_KEY=sk-proj-[YOUR_OPENAI_KEY]
 ANTHROPIC_API_KEY=sk-ant-[YOUR_ANTHROPIC_KEY]
 XAI_API_KEY=xai-[YOUR_XAI_KEY]
+
+# Scraping Services (optional fallback services)
+SCRAPINGBEE_API_KEY=[YOUR_SCRAPINGBEE_KEY]
+BROWSERLESS_API_KEY=[YOUR_BROWSERLESS_KEY]
 ```
 
 ## 2. Production (Vercel)
@@ -31,6 +35,8 @@ Add these environment variables in Vercel:
 - `OPENAI_API_KEY` = `sk-proj-[YOUR_OPENAI_KEY]`
 - `ANTHROPIC_API_KEY` = `sk-ant-[YOUR_ANTHROPIC_KEY]`
 - `XAI_API_KEY` = `xai-[YOUR_XAI_KEY]`
+- `SCRAPINGBEE_API_KEY` = `[YOUR_SCRAPINGBEE_KEY]` (optional, for scraping fallback)
+- `BROWSERLESS_API_KEY` = `[YOUR_BROWSERLESS_KEY]` (optional, for scraping fallback)
 
 ## 3. Test Locally
 

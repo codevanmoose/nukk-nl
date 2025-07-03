@@ -13,36 +13,45 @@ export class ScrapingService {
   };
 
   constructor() {
-    // Always prefer custom scraper, but allow external services as backup
-    if (process.env.SCRAPINGBEE_API_KEY) {
-      this.config = {
-        provider: 'scrapingbee',
-        apiKey: process.env.SCRAPINGBEE_API_KEY
-      };
-    } else if (process.env.BROWSERLESS_API_KEY) {
-      this.config = {
-        provider: 'browserless',
-        apiKey: process.env.BROWSERLESS_API_KEY
-      };
-    } else {
-      // Use custom scraper as default
-      this.config = {
-        provider: 'custom',
-        apiKey: null
-      };
-    }
+    // Always start with custom scraper, fallback to external services if available
+    this.config = {
+      provider: 'custom',
+      apiKey: null
+    };
   }
 
   async scrapeNuNl(url: string): Promise<ExtractedContent> {
-    switch (this.config.provider) {
-      case 'custom':
-        return this.scrapeWithCustomScraper(url);
-      case 'scrapingbee':
-        return this.scrapeWithScrapingBee(url);
-      case 'browserless':
-        return this.scrapeWithBrowserless(url);
-      default:
-        throw new Error('Invalid scraping provider');
+    // Try custom scraper first
+    try {
+      console.log('Attempting scraping with custom scraper...');
+      return await this.scrapeWithCustomScraper(url);
+    } catch (customError) {
+      console.error('Custom scraper failed:', customError);
+      
+      // Fallback to ScrapingBee if available
+      if (process.env.SCRAPINGBEE_API_KEY) {
+        try {
+          console.log('Falling back to ScrapingBee...');
+          this.config = { provider: 'scrapingbee', apiKey: process.env.SCRAPINGBEE_API_KEY };
+          return await this.scrapeWithScrapingBee(url);
+        } catch (scrapingBeeError) {
+          console.error('ScrapingBee fallback failed:', scrapingBeeError);
+        }
+      }
+      
+      // Fallback to Browserless if available
+      if (process.env.BROWSERLESS_API_KEY) {
+        try {
+          console.log('Falling back to Browserless...');
+          this.config = { provider: 'browserless', apiKey: process.env.BROWSERLESS_API_KEY };
+          return await this.scrapeWithBrowserless(url);
+        } catch (browserlessError) {
+          console.error('Browserless fallback failed:', browserlessError);
+        }
+      }
+      
+      // If all methods fail, throw the original custom scraper error
+      throw new Error(`All scraping methods failed. Custom scraper error: ${customError instanceof Error ? customError.message : 'Unknown error'}`);
     }
   }
 
