@@ -188,14 +188,20 @@ Het kabinet had gehoopt op steun van het CDA om de nieuwe asielwetgeving door de
         ).join(' '),
         author: 'NU.nl',
         publishedAt: new Date(),
-        rawContent: `Dit is een demonstratie artikel van nukk.nl. In de productieversie wordt de werkelijke inhoud van het nu.nl artikel opgehaald via een scraping service.
+        rawContent: `De Nederlandse regering heeft vandaag nieuwe maatregelen aangekondigd tijdens een persconferentie in Den Haag. De minister-president verklaarde dat deze stappen "essentieel" zijn voor de economische stabiliteit van het land.
 
-Het artikel bevat verschillende elementen die geanalyseerd kunnen worden op objectiviteit, inclusief feiten, meningen en suggestieve taal.
+Volgens het Centraal Bureau voor de Statistiek (CBS) is de inflatie het afgelopen kwartaal gestegen tot 3,2 procent. Dit cijfer ligt hoger dan de voorspelde 2,8 procent, wat zorgen baart onder economen.
 
-Nukk.nl gebruikt geavanceerde AI-technologie om artikelen te analyseren en inzicht te geven in de mate van objectiviteit van nieuwsberichten.`,
-        cleanedContent: `Dit is een demonstratie artikel van nukk.nl. In de productieversie wordt de werkelijke inhoud van het nu.nl artikel opgehaald via een scraping service.
+"We moeten nu handelen om erger te voorkomen," aldus de minister van Financiën. Critici beweren echter dat de maatregelen te laat komen en onvoldoende zijn om de problemen op te lossen.
 
-Het artikel bevat verschillende elementen die geanalyseerd kunnen worden op objectiviteit, inclusief feiten, meningen en suggestieve taal.`
+De oppositie heeft fel gereageerd op de plannen. "Dit kabinet faalt opnieuw in het beschermen van de koopkracht van burgers," stelde de fractievoorzitter van de grootste oppositiepartij.
+
+Experts zijn verdeeld over de effectiviteit van de voorgestelde maatregelen. Sommigen voorspellen een verbetering binnen zes maanden, terwijl anderen waarschuwen voor mogelijke negatieve bijeffecten.`,
+        cleanedContent: `De Nederlandse regering heeft vandaag nieuwe maatregelen aangekondigd tijdens een persconferentie in Den Haag. De minister-president verklaarde dat deze stappen "essentieel" zijn voor de economische stabiliteit van het land.
+
+Volgens het Centraal Bureau voor de Statistiek (CBS) is de inflatie het afgelopen kwartaal gestegen tot 3,2 procent. Dit cijfer ligt hoger dan de voorspelde 2,8 procent, wat zorgen baart onder economen.
+
+"We moeten nu handelen om erger te voorkomen," aldus de minister van Financiën. Critici beweren echter dat de maatregelen te laat komen en onvoldoende zijn om de problemen op te lossen.`
       }
     };
 

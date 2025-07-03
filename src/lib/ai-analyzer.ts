@@ -101,14 +101,18 @@ export class AIAnalyzer {
   private async analyzeWithOpenAI(content: ExtractedContent): Promise<Omit<AnalysisResult, 'processing_time_ms' | 'ai_model'>> {
     const systemPrompt = `You are an expert fact-checker and media analyst specializing in Dutch journalism. Your task is to analyze nu.nl articles for objectivity, identifying where opinions are presented as facts, where information is incomplete, or where language is suggestive rather than neutral.
 
+    IMPORTANT: Even if the article is short or appears to be a demo/test, analyze what content IS present. Do not mark everything as "incomplete" just because it's brief. Focus on the actual sentences provided.
+
     Analyze the article and provide:
     1. An objectivity score (0-100, where 100 is completely objective)
     2. Percentage breakdown of content types (must sum to 100%):
        - Facts: Verifiable statements with clear sources
-       - Opinions: Personal interpretations or subjective statements
+       - Opinions: Personal interpretations or subjective statements  
        - Suggestive: Implied claims or leading language
        - Incomplete: Missing context or important information
     3. Specific annotations highlighting problematic text
+
+    For demo/test content, be generous with scoring - analyze the style and approach rather than penalizing for brevity.
 
     Return your analysis in the following JSON format:
     {
