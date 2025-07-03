@@ -274,6 +274,93 @@ Tot nu toe zijn er geen gewonden gemeld. Wel is minstens één huis door de vlam
 
 De brandweer waarschuwt dat het nog dagen kan duren voordat de brand volledig onder controle is. Bewoners en toeristen in de omgeving wordt geadviseerd alert te blijven en instructies van de autoriteiten op te volgen.`
       },
+      'cristiano': {
+        title: 'Cristiano Ronaldo aangedaan na overlijden teamgenoot: "Dit is onwerkelijk"',
+        author: 'NU.nl Sport',
+        publishedAt: new Date(),
+        rawContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."
+
+De Portugese voetbalbond heeft aangekondigd dat er tijdens de komende interland tegen Kroatië een minuut stilte zal worden gehouden. Ook zullen de spelers met rouwbanden spelen.
+
+Teamgenoten van Jota hebben massaal hun steun betuigd aan de familie. "Rust in vrede, vriend. Je zult nooit worden vergeten," schrijft middenvelder Otavio op Instagram.
+
+Al-Nassr heeft bekendgemaakt dat het rugnummer 21, dat Jota droeg, uit roulatie wordt genomen. Ook zal er een herdenkingswedstrijd worden georganiseerd waarvan de opbrengst naar de nabestaanden gaat.`,
+        cleanedContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."`
+      },
+      'ronaldo': {
+        title: 'Cristiano Ronaldo aangedaan na overlijden teamgenoot: "Dit is onwerkelijk"',
+        author: 'NU.nl Sport',
+        publishedAt: new Date(),
+        rawContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."
+
+De Portugese voetbalbond heeft aangekondigd dat er tijdens de komende interland tegen Kroatië een minuut stilte zal worden gehouden. Ook zullen de spelers met rouwbanden spelen.
+
+Teamgenoten van Jota hebben massaal hun steun betuigd aan de familie. "Rust in vrede, vriend. Je zult nooit worden vergeten," schrijft middenvelder Otavio op Instagram.
+
+Al-Nassr heeft bekendgemaakt dat het rugnummer 21, dat Jota droeg, uit roulatie wordt genomen. Ook zal er een herdenkingswedstrijd worden georganiseerd waarvan de opbrengst naar de nabestaanden gaat.`,
+        cleanedContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."`
+      },
+      'voetbal': {
+        title: 'Cristiano Ronaldo aangedaan na overlijden teamgenoot: "Dit is onwerkelijk"',
+        author: 'NU.nl Sport',
+        publishedAt: new Date(),
+        rawContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."
+
+De Portugese voetbalbond heeft aangekondigd dat er tijdens de komende interland tegen Kroatië een minuut stilte zal worden gehouden. Ook zullen de spelers met rouwbanden spelen.
+
+Teamgenoten van Jota hebben massaal hun steun betuigd aan de familie. "Rust in vrede, vriend. Je zult nooit worden vergeten," schrijft middenvelder Otavio op Instagram.
+
+Al-Nassr heeft bekendgemaakt dat het rugnummer 21, dat Jota droeg, uit roulatie wordt genomen. Ook zal er een herdenkingswedstrijd worden georganiseerd waarvan de opbrengst naar de nabestaanden gaat.`,
+        cleanedContent: `Cristiano Ronaldo heeft met een emotionele boodschap gereageerd op het plotselinge overlijden van zijn teamgenoot Diogo Jota. De 28-jarige aanvaller kwam gisteren om het leven bij een verkeersongeval in Portugal.
+
+"Dit is onwerkelijk en onacceptabel," schrijft Ronaldo op zijn sociale media. "Diogo was niet alleen een fantastische voetballer, maar boven alles een geweldig mens. Mijn hart is gebroken."
+
+Jota speelde de afgelopen drie seizoenen samen met Ronaldo bij Al-Nassr in Saudi-Arabië. De Portugese international was een belangrijke speler voor het team en scoorde dit seizoen al 12 doelpunten in 18 wedstrijden.
+
+Het ongeval gebeurde volgens lokale media op een snelweg nabij Lissabon. Jota zou de controle over zijn voertuig hebben verloren, waarna hij tegen een vangrail botste. Hulpdiensten konden niets meer voor hem doen.
+
+"We hebben een broeder verloren," aldus Al-Nassr coach Luis Castro tijdens een emotionele persconferentie. "Diogo was geliefd bij iedereen in de club. Dit verlies is niet te beschrijven."`
+      },
       'default': {
         title: slug.split('-').map(word => 
           word.charAt(0).toUpperCase() + word.slice(1)
