@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse } from '@/types';
-import { getContentExtractor } from '@/lib/content-extractor';
+import { getScrapingService } from '@/lib/scraping-service';
 import { getAIAnalyzer } from '@/lib/ai-analyzer';
 import { supabaseAdmin } from '@/lib/supabase';
 
@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract content from nu.nl
-    const extractor = await getContentExtractor();
-    const extractedContent = await extractor.extractFromNuNl(normalizedUrl);
+    const scraper = getScrapingService();
+    const extractedContent = await scraper.scrapeNuNl(normalizedUrl);
     
     // Store or update article
     const { data: article, error: articleError } = await supabaseAdmin

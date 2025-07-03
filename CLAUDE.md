@@ -88,15 +88,15 @@ npm run build
 
 ## 🏗️ Implementation Details
 
-### Custom Web Scraper Features
+### Web Scraping via ScrapFly
 ```typescript
-// Located in: src/lib/custom-scraper.ts
-- Dutch geolocation simulation (Amsterdam coordinates)
-- Anti-detection measures (realistic user agents, headers)
+// Located in: src/lib/scraping-service.ts
+- Professional scraping service with 1,000 free requests/month
+- Dutch geolocation (NL) support
 - JavaScript rendering for dynamic content
-- Resource blocking for faster scraping
-- Robust content extraction with fallback selectors
-- Automatic cleanup of unwanted elements
+- Anti-scraping protection bypass (asp=true)
+- Automatic retries with residential proxies
+- Reliable extraction without maintenance overhead
 ```
 
 ### AI Analysis Engine
@@ -145,10 +145,9 @@ src/
 │   ├── homepage/                   # Homepage sections
 │   └── ui/                        # Shadcn/ui components
 ├── lib/                   # Core functionality
-│   ├── custom-scraper.ts          # Puppeteer web scraper
+│   ├── scraping-service.ts        # ScrapFly integration
 │   ├── ai-analyzer.ts             # Multi-model AI engine
-│   ├── content-extractor-serverless.ts # Content processing
-│   ├── scraping-service.ts        # Scraping orchestration
+│   ├── content-extractor.ts       # Content export module
 │   └── supabase.ts                # Database client
 ├── types/                 # TypeScript definitions
 ├── utils/                 # Helper functions
@@ -157,14 +156,14 @@ src/
 
 ## 🎯 PRODUCTION FEATURES
 
-### ✅ Web Scraping (Resilient Fallback System)
-- **Custom Puppeteer scraper** - Primary method, zero external API costs
-- **ScrapingBee fallback** - Automatic fallback for 403/blocking errors
-- **Browserless fallback** - Secondary fallback option
-- **Dutch optimization** - Amsterdam geolocation, nl-NL locale
-- **Anti-detection** - Realistic browser fingerprinting
+### ✅ Web Scraping (ScrapFly)
+- **ScrapFly service** - Professional scraping with 1,000 free requests/month
+- **Dutch optimization** - NL geolocation support
+- **Anti-scraping bypass** - Built-in protection bypass (asp=true)
 - **JavaScript rendering** - Handles dynamic content
-- **Smart extraction** - Multiple selector fallbacks
+- **Residential proxies** - Reliable access to nu.nl
+- **Automatic retries** - Built-in retry mechanism
+- **Smart extraction** - HTML parsing with fallback selectors
 
 ### ✅ AI Analysis (Multi-Model)
 - **OpenAI GPT-4** - Primary analysis engine
@@ -182,13 +181,13 @@ src/
 
 ## Key Production Considerations
 - ✅ Real API keys configured (no demo content)
-- ✅ Resilient scraping with automatic fallbacks
+- ✅ Professional scraping with ScrapFly (1,000 free requests/month)
 - ✅ Multi-model AI provides reliability through consensus
 - ✅ Proper error handling for production environment
 - ✅ Mobile-responsive design
 - ✅ Fast page load times (<2 seconds)
 - ✅ GDPR-compliant data handling
-- ✅ Cost optimization (custom scraper first, external services as fallback)
+- ✅ Cost optimization (free tier covers typical usage)
 
 ## Testing Checklist ✅
 - ✅ All API endpoints return real data
@@ -197,7 +196,7 @@ src/
 - ✅ Multi-model comparison functional
 - ✅ Mobile layout is responsive
 - ✅ Error states are handled gracefully
-- ✅ Custom scraper bypasses paywalls/blocks
+- ✅ ScrapFly reliably scrapes nu.nl articles
 
 ## 🚀 READY FOR USE
 **Visit https://nukk.nl and paste any nu.nl article URL to experience AI-powered fact-checking!**

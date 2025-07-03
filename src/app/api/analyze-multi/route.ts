@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getContentExtractor } from '@/lib/content-extractor-serverless';
+import { getScrapingService } from '@/lib/scraping-service';
 import { getAIAnalyzer } from '@/lib/ai-analyzer';
 import { supabaseAdmin } from '@/lib/supabase';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
 
     // Extract content if article doesn't exist
     if (!article) {
-      const extractor = getContentExtractor();
-      const extractedContent = await extractor.extractFromNuNl(normalizedUrl);
+      const scraper = getScrapingService();
+      const extractedContent = await scraper.scrapeNuNl(normalizedUrl);
 
       const { data: newArticle, error: articleError } = await supabaseAdmin
         .from('articles')
