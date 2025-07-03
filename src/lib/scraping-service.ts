@@ -8,11 +8,12 @@ export interface ExtractedContent {
 
 export class ScrapingService {
   private config: {
-    provider: 'scrapingbee' | 'browserless' | null;
+    provider: 'custom' | 'scrapingbee' | 'browserless';
     apiKey: string | null;
   };
 
   constructor() {
+    // Always prefer custom scraper, but allow external services as backup
     if (process.env.SCRAPINGBEE_API_KEY) {
       this.config = {
         provider: 'scrapingbee',
@@ -24,28 +25,36 @@ export class ScrapingService {
         apiKey: process.env.BROWSERLESS_API_KEY
       };
     } else {
+      // Use custom scraper as default
       this.config = {
-        provider: null,
+        provider: 'custom',
         apiKey: null
       };
     }
   }
 
   async scrapeNuNl(url: string): Promise<ExtractedContent> {
-    if (!this.config.provider || !this.config.apiKey) {
-      throw new Error(
-        'No scraping service configured. Please set SCRAPINGBEE_API_KEY or BROWSERLESS_API_KEY in your environment variables. ' +
-        'Visit https://www.scrapingbee.com or https://www.browserless.io to get an API key.'
-      );
-    }
-
     switch (this.config.provider) {
+      case 'custom':
+        return this.scrapeWithCustomScraper(url);
       case 'scrapingbee':
         return this.scrapeWithScrapingBee(url);
       case 'browserless':
         return this.scrapeWithBrowserless(url);
       default:
         throw new Error('Invalid scraping provider');
+    }
+  }
+
+  private async scrapeWithCustomScraper(url: string): Promise<ExtractedContent> {
+    const { getCustomScraper } = await import('./custom-scraper');
+    const scraper = getCustomScraper();
+    
+    try {
+      return await scraper.scrapeNuNl(url);
+    } catch (error) {
+      console.error('Custom scraper failed:', error);
+      throw new Error(`Failed to scrape article with custom scraper: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
