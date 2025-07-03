@@ -182,6 +182,44 @@ De christendemocraten hebben grote bezwaren tegen verschillende onderdelen van h
 
 Het kabinet had gehoopt op steun van het CDA om de nieuwe asielwetgeving door de Eerste Kamer te loodsen. Zonder deze steun is er geen meerderheid voor het voorstel. De coalitie heeft in de senaat geen meerderheid en is afhankelijk van de oppositie.`
       },
+      'vakantielanden': {
+        title: 'Populaire vakantielanden koelen iets af, maar tropische hitte nog niet voorbij',
+        author: 'NU.nl Weerbericht',
+        publishedAt: new Date(),
+        rawContent: `De extreme hittegolf in Zuid-Europa lijkt langzaam af te zwakken, maar volgens meteorologen is de tropische hitte nog niet voorbij. In populaire vakantielanden als Spanje, Italië en Griekenland dalen de temperaturen de komende dagen enkele graden.
+
+"We zien een tijdelijke verlichting, maar het blijft uitzonderlijk warm voor de tijd van het jaar," verklaart een woordvoerder van het KNMI. De temperaturen blijven volgens de voorspellingen ruim boven de 35 graden in grote delen van het Middellandse Zeegebied.
+
+Toeristen wordt geadviseerd voorzichtig te blijven en voldoende water te drinken. Verschillende landen hebben nog steeds het hoogste hittealarmniveau van kracht. De autoriteiten waarschuwen vooral voor de middaguren, wanneer de zon het felst is.
+
+Experts wijzen erop dat deze extreme weersomstandigheden mogelijk vaker gaan voorkomen door klimaatverandering. "Dit soort hittegolven worden intensiever en duren langer," aldus klimaatwetenschappers.`,
+        cleanedContent: `De extreme hittegolf in Zuid-Europa lijkt langzaam af te zwakken, maar volgens meteorologen is de tropische hitte nog niet voorbij. In populaire vakantielanden als Spanje, Italië en Griekenland dalen de temperaturen de komende dagen enkele graden.
+
+"We zien een tijdelijke verlichting, maar het blijft uitzonderlijk warm voor de tijd van het jaar," verklaart een woordvoerder van het KNMI. De temperaturen blijven volgens de voorspellingen ruim boven de 35 graden.
+
+Toeristen wordt geadviseerd voorzichtig te blijven en voldoende water te drinken. Verschillende landen hebben nog steeds het hoogste hittealarmniveau van kracht.`
+      },
+      'pfas': {
+        title: 'Bijna iedereen in Nederland heeft te veel PFAS in het bloed',
+        author: 'NU.nl Gezondheid',
+        publishedAt: new Date(),
+        rawContent: `Bijna alle Nederlanders hebben te veel PFAS in hun bloed, blijkt uit nieuw onderzoek van het RIVM. De concentraties van deze schadelijke stoffen liggen bij 98 procent van de onderzochte personen boven de gezondheidskundige grenswaarde.
+
+PFAS zijn chemische stoffen die worden gebruikt in allerlei producten, van antiaanbakpannen tot regenkleding. Ze breken nauwelijks af in het milieu en stapelen zich op in het menselijk lichaam. Experts noemen ze daarom ook wel "eeuwige chemicaliën".
+
+"De resultaten zijn zorgwekkend," zegt toxicoloog dr. Maria Janssen. "We zien dat vooral mensen die veel vis eten hogere concentraties hebben. Dit komt waarschijnlijk doordat PFAS zich ophopen in de voedselketen."
+
+Het ministerie van Volksgezondheid overweegt strengere maatregelen tegen PFAS-gebruik. "We moeten de blootstelling aan deze stoffen drastisch verminderen," aldus een woordvoerder.
+
+Gezondheidseffecten van PFAS kunnen onder meer verminderde vruchtbaarheid, verhoogd cholesterol en een verzwakt immuunsysteem zijn. Het RIVM adviseert mensen om gevarieerd te eten en producten met PFAS waar mogelijk te vermijden.`,
+        cleanedContent: `Bijna alle Nederlanders hebben te veel PFAS in hun bloed, blijkt uit nieuw onderzoek van het RIVM. De concentraties van deze schadelijke stoffen liggen bij 98 procent van de onderzochte personen boven de gezondheidskundige grenswaarde.
+
+PFAS zijn chemische stoffen die worden gebruikt in allerlei producten, van antiaanbakpannen tot regenkleding. Ze breken nauwelijks af in het milieu en stapelen zich op in het menselijk lichaam.
+
+"De resultaten zijn zorgwekkend," zegt toxicoloog dr. Maria Janssen. "We zien dat vooral mensen die veel vis eten hogere concentraties hebben."
+
+Het ministerie overweegt strengere maatregelen tegen PFAS-gebruik. Gezondheidseffecten kunnen onder meer verminderde vruchtbaarheid en verhoogd cholesterol zijn.`
+      },
       'default': {
         title: slug.split('-').map(word => 
           word.charAt(0).toUpperCase() + word.slice(1)
