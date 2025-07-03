@@ -24,13 +24,21 @@ export interface Analysis {
 
 export interface Annotation {
   id: string;
-  analysis_id: string;
-  text_start: number;
-  text_end: number;
-  annotation_type: 'fact' | 'opinion' | 'suggestive' | 'incomplete';
+  analysis_id?: string;
+  // New format fields
+  type: 'fact' | 'opinion' | 'suggestive' | 'incomplete';
+  text: string;
+  reasoning: string;
   confidence: number;
-  explanation: string;
+  start_index: number;
+  end_index: number;
+  // Old format fields (for compatibility)
+  text_start?: number;
+  text_end?: number;
+  annotation_type?: 'fact' | 'opinion' | 'suggestive' | 'incomplete';
+  explanation?: string;
   sources?: unknown[];
+  created_at?: Date;
 }
 
 export interface UserFeedback {

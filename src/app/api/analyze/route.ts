@@ -88,17 +88,17 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to store analysis: ' + analysisError?.message);
     }
 
-    // Store annotations
+    // Store annotations - map to existing database schema
     const annotations = [];
     if (analysisResult.annotations.length > 0) {
       const annotationsToInsert = analysisResult.annotations.map(ann => ({
         analysis_id: analysis.id,
-        text_start: ann.text_start,
-        text_end: ann.text_end,
-        annotation_type: ann.annotation_type,
+        text_start: ann.start_index,
+        text_end: ann.end_index,
+        annotation_type: ann.type,
         confidence: ann.confidence,
-        explanation: ann.explanation,
-        sources: ann.sources || []
+        explanation: ann.reasoning,
+        sources: []
       }));
 
       const { data: insertedAnnotations, error: annotationsError } = await supabaseAdmin
@@ -109,7 +109,18 @@ export async function POST(request: NextRequest) {
       if (annotationsError) {
         console.warn('Failed to store annotations:', annotationsError);
       } else {
-        annotations.push(...(insertedAnnotations || []));
+        // Map back to our format for the response
+        const mappedAnnotations = (insertedAnnotations || []).map((dbAnn, index) => ({
+          id: dbAnn.id,
+          type: dbAnn.annotation_type,
+          text: analysisResult.annotations[index]?.text || '',
+          reasoning: dbAnn.explanation,
+          confidence: dbAnn.confidence,
+          start_index: dbAnn.text_start,
+          end_index: dbAnn.text_end,
+          created_at: dbAnn.created_at
+        }));
+        annotations.push(...mappedAnnotations);
       }
     }
 

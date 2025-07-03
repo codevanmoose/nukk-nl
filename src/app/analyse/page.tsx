@@ -8,6 +8,7 @@ import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse } from '@/types';
 import { ArrowLeft, ExternalLink, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { AnalysisHighlights } from '@/components/analysis-highlights';
 
 function AnalyseContent() {
   const searchParams = useSearchParams();
@@ -244,18 +245,19 @@ function AnalyseContent() {
           </CardContent>
         </Card>
 
-        {/* Coming Soon - Full Analysis */}
+        {/* Detailed Text Analysis with Highlights */}
         <Card>
           <CardHeader>
-            <CardTitle>Gedetailleerde Analyse</CardTitle>
+            <CardTitle>Gedetailleerde Tekstanalyse</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-8 text-muted-foreground">
-              <p className="mb-4">Gedetailleerde tekstanalyse met highlights komt binnenkort...</p>
-              <p className="text-sm">
-                Analyseverwerking duurde {analysis.analysis.processing_time_ms}ms 
-                • Model: {analysis.analysis.ai_model}
-              </p>
+            <AnalysisHighlights 
+              text={analysis.article.cleaned_content}
+              annotations={analysis.annotations || []}
+            />
+            <div className="mt-4 text-sm text-muted-foreground text-center">
+              Analyseverwerking duurde {analysis.analysis.processing_time_ms}ms 
+              • Model: {analysis.analysis.ai_model}
             </div>
           </CardContent>
         </Card>

@@ -123,15 +123,17 @@ export class AIAnalyzer {
       "incomplete_percentage": number,
       "annotations": [
         {
-          "text_start": number,
-          "text_end": number,
-          "annotation_type": "fact" | "opinion" | "suggestive" | "incomplete",
-          "confidence": number,
-          "explanation": "string",
-          "sources": []
+          "text": "exact text being annotated",
+          "type": "fact" | "opinion" | "suggestive" | "incomplete",
+          "confidence": number (0-1),
+          "reasoning": "explanation in Dutch",
+          "start_index": number,
+          "end_index": number
         }
       ]
-    }`;
+    }
+    
+    IMPORTANT: For each annotation, include the exact text snippet and calculate start_index and end_index based on the position in the cleaned content. Include 3-5 meaningful annotations that best illustrate the article's objectivity issues.`;
 
     const userPrompt = `Please analyze this nu.nl article:
 
@@ -330,32 +332,31 @@ export class AIAnalyzer {
 
   private getMockAnalysis(content: ExtractedContent, startTime: number): AnalysisResult {
     // Generate realistic mock analysis for demonstration
-    const annotations: AnalysisResult['annotations'] = [
-      {
-        type: 'fact',
-        text: 'Het CDA heeft aangekondigd tegen de plannen te stemmen',
-        reasoning: 'Dit is een verifieerbaar feit over de stemintentie van het CDA',
-        confidence: 0.95,
-        start_index: 100,
-        end_index: 155
-      },
-      {
-        type: 'opinion',
-        text: 'belangrijke tegenslag',
-        reasoning: 'Het woord "belangrijke" is een subjectieve kwalificatie',
-        confidence: 0.85,
-        start_index: 400,
-        end_index: 420
-      },
-      {
-        type: 'suggestive',
-        text: 'lijken te stranden',
-        reasoning: 'Suggereert een uitkomst die nog niet definitief is',
-        confidence: 0.80,
-        start_index: 20,
-        end_index: 38
+    const text = content.cleanedContent;
+    const annotations: AnalysisResult['annotations'] = [];
+
+    // Find actual text snippets in the content
+    const findAndAnnotate = (searchText: string, type: Annotation['type'], reasoning: string, confidence: number) => {
+      const index = text.indexOf(searchText);
+      if (index !== -1) {
+        annotations.push({
+          type,
+          text: searchText,
+          reasoning,
+          confidence,
+          start_index: index,
+          end_index: index + searchText.length
+        });
       }
-    ];
+    };
+
+    // Look for common patterns in Dutch news articles
+    findAndAnnotate('essentieel', 'opinion', 'Het woord "essentieel" is een subjectieve kwalificatie', 0.85);
+    findAndAnnotate('cruciaal', 'opinion', 'Het woord "cruciaal" is een waardeoordeel', 0.85);
+    findAndAnnotate('volgens', 'fact', 'Verwijzing naar een bron of autoriteit', 0.90);
+    findAndAnnotate('CBS', 'fact', 'Verwijzing naar officiële instantie (Centraal Bureau voor de Statistiek)', 0.95);
+    findAndAnnotate('beweren', 'suggestive', 'Het woord "beweren" impliceert twijfel over de waarheid', 0.80);
+    findAndAnnotate('mogelijk', 'incomplete', 'Onzekerheid over de informatie', 0.75);
 
     return {
       objectivity_score: 75,
@@ -363,7 +364,7 @@ export class AIAnalyzer {
       opinion_percentage: 20,
       suggestive_percentage: 10,
       incomplete_percentage: 5,
-      annotations,
+      annotations: annotations.slice(0, 5), // Limit to 5 annotations
       processing_time_ms: Date.now() - startTime,
       ai_model: 'mock-demo'
     };
