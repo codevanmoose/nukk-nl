@@ -2,15 +2,25 @@
 > nukk@0.1.0 dev
 > next dev --turbopack
 
+ ⚠ Port 3000 is in use, using available port 3001 instead.
    ▲ Next.js 15.3.3 (Turbopack)
-   - Local:        http://localhost:3000
-   - Network:      http://192.168.1.123:3000
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.1.123:3001
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Compiled middleware in 87ms
- ✓ Ready in 845ms
- ○ Compiling / ...
- ✓ Compiled / in 908ms
- GET / 200 in 1061ms
+ ✓ Compiled middleware in 109ms
+ ✓ Ready in 900ms
+ ○ Compiling /api/analyze ...
+ ✓ Compiled /api/analyze in 505ms
+Analysis error: Error: Failed to store article: TypeError: fetch failed
+    at POST (src/app/api/analyze/route.ts:64:12)
+  62 |
+  63 |     if (articleError || !article) {
+> 64 |       throw new Error('Failed to store article: ' + articleError?.message);
+     |            ^
+  65 |     }
+  66 |
+  67 |     // Analyze with AI
+ POST /api/analyze 500 in 737ms
 [?25h
