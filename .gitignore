@@ -39,3 +39,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Deploy trigger Fri Jul  4 12:47:30 CEST 2025
