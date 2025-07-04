@@ -393,6 +393,43 @@ export class AIAnalyzer {
     }
   }
 
+  private getMockAnalysis(content: ExtractedContent, startTime: number, model: string = 'mock'): AnalysisResult {
+    // Generate a deterministic but varied score based on content
+    const contentLength = content.cleanedContent.length;
+    const baseScore = 60 + (contentLength % 30);
+    
+    // Create mock annotations
+    const sentences = content.cleanedContent.split(/[.!?]+/).filter(s => s.trim().length > 20);
+    const mockAnnotations: Omit<Annotation, 'id' | 'analysis_id' | 'created_at'>[] = [];
+    
+    // Add a few mock annotations
+    const annotationCount = Math.min(3, sentences.length);
+    for (let i = 0; i < annotationCount; i++) {
+      const sentence = sentences[i].trim();
+      const types = ['incomplete', 'opinion', 'suggestive'];
+      const type = types[i % types.length] as 'fact' | 'opinion' | 'suggestive' | 'incomplete';
+      
+      mockAnnotations.push({
+        text: sentence,
+        type,
+        confidence: 0.85 + (Math.random() * 0.15),
+        start_index: content.cleanedContent.indexOf(sentence),
+        end_index: content.cleanedContent.indexOf(sentence) + sentence.length,
+        explanation: `Mock analysis: This appears to be ${type === 'fact' ? 'a factual statement' : type === 'opinion' ? 'an opinion' : type === 'suggestive' ? 'suggestive language' : 'incomplete information'}.`
+      });
+    }
+    
+    return {
+      objectivity_score: baseScore,
+      fact_percentage: 60,
+      opinion_percentage: 20,
+      suggestive_percentage: 15,
+      incomplete_percentage: 5,
+      annotations: mockAnnotations,
+      processing_time_ms: Date.now() - startTime,
+      ai_model: `${model} (mock)`
+    };
+  }
 
 }
 
