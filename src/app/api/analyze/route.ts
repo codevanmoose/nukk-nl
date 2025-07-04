@@ -3,7 +3,7 @@ import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse } from '@/types';
 import { getScrapingService } from '@/lib/scraping-service';
 import { getAIAnalyzer } from '@/lib/ai-analyzer';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function POST(request: NextRequest) {
   try {

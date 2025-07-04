@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getScrapingService } from '@/lib/scraping-service';
 import { getAIAnalyzer } from '@/lib/ai-analyzer';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 
 export async function POST(request: NextRequest) {
