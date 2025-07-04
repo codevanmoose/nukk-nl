@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { isValidNuUrl } from '@/utils/url-validation';
 import { useRouter } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export default function MinimalInputCard() {
   const [url, setUrl] = useState('');
@@ -38,74 +37,60 @@ export default function MinimalInputCard() {
   };
 
   return (
-    <div className="w-full max-w-md">
-      {/* Logo and tagline */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2">nukk.nl</h1>
-        <p className="text-gray-600 text-sm">
-          AI-powered fact-checking voor nu.nl
+    <div className="w-full max-w-sm">
+      {/* Logo */}
+      <div className="mb-12">
+        <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-6">
+          <span className="text-white font-bold text-lg">nk</span>
+        </div>
+        
+        <h1 className="text-2xl mb-2">
+          You&apos;re <span className="font-bold">almost</span><br />
+          there
+        </h1>
+        
+        <p className="text-gray-600 text-sm mt-4">
+          To continue, please paste your<br />
+          nu.nl article URL below
         </p>
       </div>
 
-      {/* Input card */}
-      <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="url-input" className="text-sm font-medium text-gray-700">
-              Artikel URL
-            </label>
-            <div className="relative">
-              <Input
-                id="url-input"
-                type="url"
-                placeholder="https://www.nu.nl/..."
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                className="h-12 pr-10 border-gray-200 focus:border-blue-500 rounded-xl"
-                disabled={isLoading}
-              />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
-          </div>
-
-          <Button 
-            type="submit" 
-            size="lg" 
-            className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium"
+      {/* Input form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+          <input
+            type="url"
+            placeholder="https://www.nu.nl/..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            className="w-full h-14 px-4 pr-14 border-2 border-gray-200 rounded-full text-base placeholder:text-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
             disabled={isLoading}
+          />
+          <button
+            type="submit"
+            className="absolute right-1 top-1 w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
+            disabled={isLoading || !url.trim()}
           >
-            {isLoading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Analyseren...
-              </span>
-            ) : (
-              'Analyseer artikel'
-            )}
-          </Button>
-        </form>
-
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
-            Check waar mening als feit wordt gepresenteerd
-          </p>
+            <ArrowUp className="w-5 h-5 text-white" />
+          </button>
         </div>
-      </div>
+        
+        {error && (
+          <p className="text-sm text-red-500 ml-4">{error}</p>
+        )}
+      </form>
 
-      {/* Bottom link */}
-      <div className="mt-8 text-center">
-        <a 
-          href="#how-it-works" 
-          className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+      {/* Bottom button */}
+      <div className="mt-12">
+        <Button 
+          variant="default"
+          size="lg"
+          className="w-full h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-base"
+          onClick={handleSubmit}
+          disabled={isLoading || !url.trim()}
         >
-          Hoe werkt het?
-        </a>
+          {isLoading ? 'Analyseren...' : 'I agree'}
+        </Button>
       </div>
     </div>
   );

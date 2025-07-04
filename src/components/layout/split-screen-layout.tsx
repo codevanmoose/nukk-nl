@@ -11,10 +11,10 @@ export default function SplitScreenLayout({ leftContent, rightContent }: SplitSc
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Desktop split-screen layout */}
-      <div className="hidden md:grid md:grid-cols-[35%_65%] h-full">
+      <div className="hidden md:grid md:grid-cols-[30%_70%] h-full">
         {/* Left side - Functionality */}
-        <div className="relative bg-white h-full overflow-y-auto">
-          <div className="flex items-center justify-center min-h-full p-8">
+        <div className="relative bg-gray-50 h-full overflow-y-auto">
+          <div className="flex items-center justify-center min-h-full p-12">
             {leftContent}
           </div>
         </div>
