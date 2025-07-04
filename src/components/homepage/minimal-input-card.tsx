@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { isValidNuUrl } from '@/utils/url-validation';
 import { useRouter } from 'next/navigation';
 import { ArrowUp } from 'lucide-react';
+import { trackEvent } from '@/components/analytics/google-analytics';
 
 export default function MinimalInputCard() {
   const [url, setUrl] = useState('');
@@ -28,6 +29,9 @@ export default function MinimalInputCard() {
 
     setIsLoading(true);
     try {
+      // Track the analysis request
+      trackEvent('analyze_article', 'engagement', url);
+      
       const encodedUrl = encodeURIComponent(url);
       router.push(`/analyse?url=${encodedUrl}`);
     } catch {
