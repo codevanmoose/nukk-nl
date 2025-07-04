@@ -106,10 +106,13 @@ export class AIAnalyzer {
   async analyzeContent(content: ExtractedContent): Promise<AnalysisResult> {
     const startTime = Date.now();
     
-    // Check if API keys are configured
-    if (!process.env.OPENAI_API_KEY || !process.env.ANTHROPIC_API_KEY) {
+    // Check if we should use mock mode
+    const useMock = process.env.USE_MOCK_ANALYSIS === 'true' || 
+                   (!process.env.OPENAI_API_KEY || !process.env.ANTHROPIC_API_KEY);
+    
+    if (useMock) {
       // Return mock analysis for demonstration
-      console.log('Using mock analysis - API keys not configured');
+      console.log('Using mock analysis for demonstration');
       return this.getMockAnalysis(content, startTime);
     }
     
@@ -388,7 +391,7 @@ export class AIAnalyzer {
     }
     
     // Ensure annotations array exists but don't generate fake ones
-    if (analysis.annotations.length === 0) {
+    if ((analysis.annotations as any[]).length === 0) {
       console.warn('AI returned no annotations for this article');
     }
   }

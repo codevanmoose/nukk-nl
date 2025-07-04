@@ -41,7 +41,7 @@ export function AnalysisHighlights({ text, annotations }: AnalysisHighlightsProp
       return <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{text}</p>;
     }
 
-    const elements: JSX.Element[] = [];
+    const elements: React.ReactElement[] = [];
     let lastIndex = 0;
 
     sortedAnnotations.forEach((annotation, index) => {

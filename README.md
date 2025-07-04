@@ -1,6 +1,8 @@
-# nukk.nl - AI-powered Fact-Checking Platform
+# nukk.nl - AI-Powered Fact-Checking for nu.nl
 
-nukk.nl is an innovative fact-checking platform that brings transparency to Dutch news consumption by automatically analyzing nu.nl articles for subjectivity, opinion-as-fact presentation, and incomplete framing.
+AI-powered fact-checking platform that analyzes nu.nl articles to detect subjectivity, opinions presented as facts, and incomplete framing.
+
+🌐 **Live at**: [https://nukk.nl](https://nukk.nl)
 
 ## Features
 
