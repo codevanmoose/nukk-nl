@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   keywords: "fact-check, nieuws, nu.nl, AI, objectiviteit, mening, feiten",
   authors: [{ name: "nukk.nl team" }],
   icons: {
-    icon: '/images/nukk-logo.png',
-    apple: '/images/nukk-logo.png',
+    icon: '/images/nukk-logo.svg',
+    apple: '/images/nukk-logo.svg',
   },
   openGraph: {
     title: "nukk.nl - Check nu.nl artikelen op feiten",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: '/images/nukk-logo.png',
+        url: '/images/nukk-logo.svg',
         width: 1200,
         height: 1200,
         alt: 'nukk.nl logo',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "nukk.nl - Check nu.nl artikelen op feiten",
     description: "AI-powered fact-checker voor Nederlandse nieuws",
-    images: ['/images/nukk-logo.png'],
+    images: ['/images/nukk-logo.svg'],
   },
 };
 

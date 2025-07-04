@@ -46,7 +46,7 @@ export default function MinimalInputCard() {
       <div className="mb-12">
         <div className="w-16 h-16 mb-6">
           <img 
-            src="/images/nukk-logo.png" 
+            src="/images/nukk-logo.svg" 
             alt="nukk.nl" 
             className="w-full h-full object-contain"
           />

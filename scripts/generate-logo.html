@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate nukk.nl Logo</title>
+</head>
+<body>
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Draw blue circle
+    ctx.fillStyle = '#1E40AF';
+    ctx.beginPath();
+    ctx.arc(256, 256, 256, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Set text properties
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Draw "nukk"
+    ctx.font = 'bold 120px Arial';
+    ctx.fillText('nukk', 256, 220);
+    
+    // Draw ".nl"
+    ctx.font = 'bold 100px Arial';
+    ctx.fillText('.nl', 256, 310);
+    
+    // Convert to PNG
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nukk-logo.png';
+      a.click();
+    });
+  </script>
+</body>
+</html>
