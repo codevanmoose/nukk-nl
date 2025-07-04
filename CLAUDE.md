@@ -8,11 +8,16 @@ Full-featured AI fact-checking platform deployed and operational at https://nukk
 
 ## 📋 Recent Changes (July 2025)
 - **WeTransfer-inspired redesign**: Complete homepage transformation to split-screen layout
-- **Professional interface**: Left pane (35%) minimal input card, right pane (65%) premium ads
+- **Professional interface**: Left pane (30%) minimal input card, right pane (70%) premium ads
 - **Enhanced monetization**: Persistent ad placement replacing temporary overlays
 - **Mobile optimization**: Responsive vertical stacking for mobile devices
 - **Simplified scraping architecture**: ScrapFly-only implementation (1,000 requests/month)
 - **Enhanced reliability**: No more 403 errors or complex fallback chains
+- **Real AI Integration**: Configured to use actual OpenAI, Anthropic, and xAI APIs from Vercel environment
+- **Fixed Client-Side Errors**: Separated Supabase clients for proper server/client isolation
+- **Improved UX Flow**: "Ontdek de mogelijkheden" now shows adverteren info in right panel
+- **Google Analytics**: Added GA4 tracking with measurement ID G-EQTEDY3XMD
+- **Brand Identity**: Integrated nukk.nl logo (blue circle with white text) throughout the site
 
 ## Development Commands
 ```bash
@@ -92,9 +97,11 @@ npm run build
 - **GitHub Repository**: ✅ https://github.com/codevanmoose/nukk-nl
 - **Vercel Deployment**: ✅ Auto-deployment active
 - **Database**: ✅ Supabase PostgreSQL operational
-- **API Keys**: ✅ OpenAI, Anthropic, xAI configured
+- **API Keys**: ✅ OpenAI, Anthropic, xAI configured in Vercel
 - **Web Scraping**: ✅ ScrapFly service operational
+- **Analytics**: ✅ Google Analytics GA4 (G-EQTEDY3XMD)
 - **Build Status**: ✅ All errors resolved
+- **Logo**: ✅ nukk.nl branding implemented
 
 ## 🏗️ Implementation Details
 
@@ -151,11 +158,16 @@ src/
 │   └── page.tsx           # Homepage (split-screen)
 ├── components/            # React components
 │   ├── layout/
-│   │   └── split-screen-layout.tsx    # WeTransfer-style layout
+│   │   ├── split-screen-layout.tsx    # WeTransfer-style layout
+│   │   ├── public-page-layout.tsx     # Reusable layout wrapper
+│   │   └── footer.tsx                 # Footer with logo
 │   ├── homepage/
-│   │   └── minimal-input-card.tsx     # Clean URL input card
+│   │   ├── minimal-input-card.tsx     # Clean URL input card
+│   │   └── adverteren-content.tsx     # Advertising info component
 │   ├── ads/
 │   │   └── premium-ad-pane.tsx        # Full-height ad display
+│   ├── analytics/
+│   │   └── google-analytics.tsx       # GA4 tracking component
 │   ├── analysis-highlights.tsx        # Color-coded text annotations
 │   ├── multi-model-analysis.tsx       # AI model comparison
 │   └── ui/                           # Shadcn/ui components
@@ -164,9 +176,15 @@ src/
 │   ├── ai-analyzer.ts             # Multi-model AI engine
 │   ├── wallpaper-ads-config.ts    # Ad pricing & rotation
 │   ├── content-extractor.ts       # Content export module
-│   └── supabase.ts                # Database client
+│   ├── supabase-client.ts         # Client-side database access
+│   └── supabase-admin.ts          # Server-side database access
 ├── types/                 # TypeScript definitions
 ├── utils/                 # Helper functions
+├── public/
+│   └── images/
+│       └── nukk-logo.svg         # Brand logo
+├── scripts/
+│   └── generate-logo.html        # Logo generation script
 └── middleware.ts          # URL redirect handling
 ```
 
@@ -189,18 +207,20 @@ src/
 - **Text annotations** - Color-coded highlighting
 
 ### ✅ User Experience
-- **WeTransfer-inspired design** - Professional split-screen interface
-- **Minimal input card** - Clean, distraction-free URL submission
+- **WeTransfer-inspired design** - Professional split-screen interface (30%/70%)
+- **Minimal input card** - Clean, distraction-free URL submission with logo
 - **Premium ad integration** - Full-height, always-visible advertising
 - **Instant analysis** - Enter nu.nl URL, get results
 - **Visual breakdown** - Progress bars, color coding
 - **Multi-model comparison** - See how different AIs analyze
 - **Mobile responsive** - Vertical stacking on mobile devices
 - **Fast loading** - Optimized for speed and Core Web Vitals
+- **Smart UI flow** - URL input always accessible, adverteren info in right panel
+- **Analytics tracking** - User engagement monitoring with GA4
 
 ## Key Production Considerations
-- ✅ WeTransfer-inspired professional design for premium advertising
-- ✅ Real API keys configured (no demo content)
+- ✅ WeTransfer-inspired professional design for premium advertising (30%/70% split)
+- ✅ Real API keys configured (no demo content) - stored in Vercel env variables
 - ✅ Professional scraping with ScrapFly (1,000 free requests/month)
 - ✅ Multi-model AI provides reliability through consensus
 - ✅ Enhanced monetization with persistent ad placement
@@ -209,30 +229,40 @@ src/
 - ✅ Fast page load times (<2 seconds)
 - ✅ GDPR-compliant data handling
 - ✅ Cost optimization (free tier covers typical usage)
+- ✅ Client/server separation for secure environment variable access
+- ✅ Google Analytics integration for usage insights
+- ✅ Professional branding with nukk.nl logo
 
 ## Testing Checklist ✅
-- ✅ WeTransfer-style split-screen layout functional
+- ✅ WeTransfer-style split-screen layout functional (30%/70%)
 - ✅ Premium ad pane displays correctly
 - ✅ Mobile vertical stacking responsive
-- ✅ All API endpoints return real data
+- ✅ All API endpoints return real data (no mock mode)
 - ✅ URL redirect works for all nu.nl formats
 - ✅ AI analysis completes in <5 seconds
 - ✅ Multi-model comparison functional
 - ✅ Error states are handled gracefully
 - ✅ ScrapFly reliably scrapes nu.nl articles
 - ✅ Ad rotation and tracking system operational
+- ✅ Client-side environment variables properly separated
+- ✅ Google Analytics tracking events firing correctly
+- ✅ Logo displays correctly across all pages
+- ✅ Adverteren content shows in right panel without losing URL input
 
 ## 🚀 READY FOR USE
 **Visit https://nukk.nl and paste any nu.nl article URL to experience AI-powered fact-checking!**
 
 Features available:
-- WeTransfer-inspired split-screen design
+- WeTransfer-inspired split-screen design (30%/70%)
 - Real-time article scraping and analysis
 - Objectivity scoring with detailed breakdown
 - Color-coded text highlighting
 - Multi-model AI comparison
 - Premium advertisement integration
 - Mobile-responsive interface with vertical stacking
+- Google Analytics tracking for insights
+- Professional nukk.nl branding
+- Smart UI flow with persistent URL input
 
 ## API Keys Setup (For Local Development)
 See `setup-api-keys.md` for local environment configuration.
