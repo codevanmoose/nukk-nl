@@ -147,7 +147,7 @@ export function calculateSlotPrice(
   date: Date,
   timeSlot: 'morning' | 'afternoon' | 'evening' | 'night'
 ): number {
-  const dayOfWeek = date.toLocaleLowerCase('en-US', { weekday: 'long' }) as keyof typeof PRICING_CONFIG.dayMultipliers;
+  const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase() as keyof typeof PRICING_CONFIG.dayMultipliers;
   
   const basePrice = PRICING_CONFIG.basePricePerDay;
   const timeMultiplier = PRICING_CONFIG.timeMultipliers[timeSlot];
