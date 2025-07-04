@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react'
-import { SplitScreenLayout } from './split-screen-layout'
-import { MinimalInputCard } from '@/components/homepage/minimal-input-card'
-import { PremiumAdPane } from '@/components/ads/premium-ad-pane'
-import { Footer } from './footer'
+import SplitScreenLayout from './split-screen-layout'
+import MinimalInputCard from '@/components/homepage/minimal-input-card'
+import PremiumAdPane from '@/components/ads/premium-ad-pane'
+import Footer from './footer'
 
 interface PublicPageLayoutProps {
   children: React.ReactNode
