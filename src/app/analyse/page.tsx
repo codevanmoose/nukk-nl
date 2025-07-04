@@ -10,7 +10,9 @@ import { ArrowLeft, ExternalLink, Loader2, Brain, Sparkles, Zap } from 'lucide-r
 import Link from 'next/link';
 import { AnalysisHighlights } from '@/components/analysis-highlights';
 import { MultiModelAnalysis } from '@/components/multi-model-analysis';
-import { PublicPageLayout } from '@/components/layout/public-page-layout';
+import SplitScreenLayout from '@/components/layout/split-screen-layout';
+import PremiumAdPane from '@/components/ads/premium-ad-pane';
+import Footer from '@/components/layout/footer';
 
 function AnalyseContent() {
   const searchParams = useSearchParams();
@@ -111,246 +113,241 @@ function AnalyseContent() {
     }
   };
 
-  if (!url) {
-    return (
-      <PublicPageLayout showUrlInput={false}>
-        <Card className="w-full">
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground mb-4">Geen URL opgegeven</p>
-            <Link href="/">
-              <Button>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Terug naar home
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </PublicPageLayout>
-    );
-  }
+  // Left pane content (article info and navigation)
+  const leftPaneContent = (
+    <div className="w-full max-w-sm">
+      {/* Header */}
+      <div className="mb-8">
+        <Link href="/">
+          <Button variant="outline" size="sm" className="mb-4">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Terug
+          </Button>
+        </Link>
+        
+        {analysis && (
+          <>
+            <h1 className="text-xl font-bold mb-2">{analysis.article.title}</h1>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>Door {analysis.article.author || 'Onbekend'}</span>
+            </div>
+            <a 
+              href={analysis.article.nu_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline mt-2"
+            >
+              Origineel artikel
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </>
+        )}
+      </div>
 
-  if (error) {
-    return (
-      <PublicPageLayout showUrlInput={false}>
-        <Card className="w-full">
-          <CardContent className="p-6 text-center">
-            <p className="text-red-600 mb-4">{error}</p>
-            <Link href="/">
-              <Button>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Probeer opnieuw
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </PublicPageLayout>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <PublicPageLayout showUrlInput={false}>
-        <Card className="w-full">
-          <CardContent className="p-6 text-center">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Artikel wordt geanalyseerd...</p>
-            <p className="text-sm text-muted-foreground mt-2">Dit kan tot 5 seconden duren</p>
-          </CardContent>
-        </Card>
-      </PublicPageLayout>
-    );
-  }
-
-  if (!analysis) {
-    return (
-      <PublicPageLayout showUrlInput={false}>
-        <Card className="w-full">
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">Geen analyse beschikbaar</p>
-          </CardContent>
-        </Card>
-      </PublicPageLayout>
-    );
-  }
-
-  return (
-    <>
-      <PublicPageLayout showUrlInput={false}>
-        <div className="h-full overflow-y-auto">
-          <div className="p-4 md:p-8 space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Terug
-                </Button>
-              </Link>
-              <div className="flex-1">
-                <h1 className="text-xl md:text-2xl font-bold">{analysis.article.title}</h1>
-                <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                  <span>Door {analysis.article.author || 'Onbekend'}</span>
-                  <span>•</span>
-                  <a 
-                    href={analysis.article.nu_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 hover:underline"
-                  >
-                    Origineel artikel
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
+      {/* Objectivity Score Summary */}
+      {analysis && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Objectiviteitsscore</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center mb-4">
+              <div className="text-3xl font-bold text-blue-600">
+                {analysis.analysis.objectivity_score}/100
               </div>
             </div>
+            
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden mb-3">
+              <div className="h-full flex">
+                <div 
+                  className="bg-green-500" 
+                  style={{ width: `${analysis.analysis.fact_percentage}%` }}
+                  title={`${analysis.analysis.fact_percentage}% Feiten`}
+                />
+                <div 
+                  className="bg-yellow-500" 
+                  style={{ width: `${analysis.analysis.opinion_percentage}%` }}
+                  title={`${analysis.analysis.opinion_percentage}% Mening`}
+                />
+                <div 
+                  className="bg-orange-500" 
+                  style={{ width: `${analysis.analysis.suggestive_percentage}%` }}
+                  title={`${analysis.analysis.suggestive_percentage}% Suggestief`}
+                />
+                <div 
+                  className="bg-red-500" 
+                  style={{ width: `${analysis.analysis.incomplete_percentage}%` }}
+                  title={`${analysis.analysis.incomplete_percentage}% Onvolledig`}
+                />
+              </div>
+            </div>
+            
+            {/* Legend */}
+            <div className="grid grid-cols-2 gap-1 text-xs">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded"></div>
+                <span>Feit ({analysis.analysis.fact_percentage}%)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-yellow-500 rounded"></div>
+                <span>Mening ({analysis.analysis.opinion_percentage}%)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-orange-500 rounded"></div>
+                <span>Suggestief ({analysis.analysis.suggestive_percentage}%)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-red-500 rounded"></div>
+                <span>Onvolledig ({analysis.analysis.incomplete_percentage}%)</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-            {/* Analysis Summary */}
+      {/* Multi-Model Toggle */}
+      {analysis && (
+        <Card className="mt-4 p-3 bg-blue-50 border-blue-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Brain className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium">Vergelijk AI Modellen</span>
+            </div>
+            <Button 
+              variant={showMultiModel ? "default" : "outline"}
+              size="sm"
+              onClick={async () => {
+                if (!showMultiModel && multiModelAnalyses.length === 0) {
+                  await fetchMultiModelAnalyses();
+                }
+                setShowMultiModel(!showMultiModel);
+              }}
+            >
+              {showMultiModel ? 'Verberg' : 'Toon'}
+            </Button>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+
+  // Right pane content with analysis overlay
+  const rightPaneContent = (
+    <div className="relative h-full w-full">
+      {/* Background Ad */}
+      <PremiumAdPane />
+      
+      {/* Analysis Overlay */}
+      {analysis && (
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-sm overflow-y-auto">
+          <div className="p-8">
+            {/* Multi-Model Analysis */}
+            {showMultiModel && multiModelAnalyses.length > 0 && (
+              <div className="mb-6">
+                <MultiModelAnalysis analyses={multiModelAnalyses} />
+              </div>
+            )}
+            
+            {showMultiModel && multiModelAnalyses.length === 0 && (
+              <Card className="p-6 mb-6">
+                <div className="flex items-center justify-center space-x-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="text-muted-foreground">Multi-model analyses laden...</span>
+                </div>
+              </Card>
+            )}
+
+            {/* Detailed Text Analysis */}
             <Card>
               <CardHeader>
-                <CardTitle>Objectiviteitsscore</CardTitle>
+                <CardTitle>Gedetailleerde Tekstanalyse</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  {/* Overall Score */}
-                  <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">
-                      {analysis.analysis.objectivity_score}/100
-                    </div>
-                    <p className="text-muted-foreground">Objectiviteit van dit artikel</p>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="space-y-3">
-                    <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
-                      <div className="h-full flex">
-                        <div 
-                          className="bg-green-500" 
-                          style={{ width: `${analysis.analysis.fact_percentage}%` }}
-                          title={`${analysis.analysis.fact_percentage}% Feiten`}
-                        />
-                        <div 
-                          className="bg-yellow-500" 
-                          style={{ width: `${analysis.analysis.opinion_percentage}%` }}
-                          title={`${analysis.analysis.opinion_percentage}% Mening`}
-                        />
-                        <div 
-                          className="bg-orange-500" 
-                          style={{ width: `${analysis.analysis.suggestive_percentage}%` }}
-                          title={`${analysis.analysis.suggestive_percentage}% Suggestief`}
-                        />
-                        <div 
-                          className="bg-red-500" 
-                          style={{ width: `${analysis.analysis.incomplete_percentage}%` }}
-                          title={`${analysis.analysis.incomplete_percentage}% Onvolledig`}
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Legend */}
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-green-500 rounded"></div>
-                        <span>Feiten ({analysis.analysis.fact_percentage}%)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-                        <span>Mening ({analysis.analysis.opinion_percentage}%)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-orange-500 rounded"></div>
-                        <span>Suggestief ({analysis.analysis.suggestive_percentage}%)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-red-500 rounded"></div>
-                        <span>Onvolledig ({analysis.analysis.incomplete_percentage}%)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Score Explanation */}
-                  <div className="text-sm text-muted-foreground text-center">
-                    {analysis.analysis.objectivity_score >= 80 && (
-                      <p>🟢 Hoge objectiviteit - Dit artikel bevat voornamelijk feiten met goede bronvermelding</p>
-                    )}
-                    {analysis.analysis.objectivity_score >= 60 && analysis.analysis.objectivity_score < 80 && (
-                      <p>🟡 Gemiddelde objectiviteit - Let op enkele subjectieve elementen</p>
-                    )}
-                    {analysis.analysis.objectivity_score >= 40 && analysis.analysis.objectivity_score < 60 && (
-                      <p>🟠 Lage objectiviteit - Aanzienlijk aandeel mening of suggestieve taal</p>
-                    )}
-                    {analysis.analysis.objectivity_score < 40 && (
-                      <p>🔴 Zeer lage objectiviteit - Voornamelijk mening gepresenteerd als nieuws</p>
-                    )}
-                  </div>
+                <AnalysisHighlights 
+                  text={analysis.article.cleaned_content}
+                  annotations={analysis.annotations || []}
+                />
+                <div className="mt-4 text-sm text-muted-foreground text-center">
+                  Analyseverwerking duurde {analysis.analysis.processing_time_ms}ms 
+                  • Model: {analysis.analysis.ai_model}
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
-      </PublicPageLayout>
+      )}
+    </div>
+  );
 
-      {/* Extended Analysis - Below the fold */}
-      <div className="px-4 pb-8">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Multi-Model Toggle */}
-          <Card className="p-4 bg-blue-50 border-blue-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Brain className="w-5 h-5 text-blue-600" />
-                <div>
-                  <h3 className="font-medium">Vergelijk AI Modellen</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Zie hoe verschillende AI's dit artikel analyseren
-                  </p>
-                </div>
-              </div>
-              <Button 
-                variant={showMultiModel ? "default" : "outline"}
-                size="sm"
-                onClick={async () => {
-                  if (!showMultiModel && multiModelAnalyses.length === 0) {
-                    await fetchMultiModelAnalyses();
-                  }
-                  setShowMultiModel(!showMultiModel);
-                }}
-              >
-                {showMultiModel ? 'Verberg vergelijking' : 'Toon vergelijking'}
-              </Button>
-            </div>
-          </Card>
-
-          {/* Multi-Model Analysis */}
-          {showMultiModel && multiModelAnalyses.length > 0 && (
-            <MultiModelAnalysis analyses={multiModelAnalyses} />
-          )}
-          
-          {showMultiModel && multiModelAnalyses.length === 0 && (
-            <Card className="p-6">
-              <div className="flex items-center justify-center space-x-2">
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span className="text-muted-foreground">Multi-model analyses laden...</span>
-              </div>
-            </Card>
-          )}
-
-          {/* Detailed Text Analysis with Highlights */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Gedetailleerde Tekstanalyse</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AnalysisHighlights 
-                text={analysis.article.cleaned_content}
-                annotations={analysis.annotations || []}
-              />
-              <div className="mt-4 text-sm text-muted-foreground text-center">
-                Analyseverwerking duurde {analysis.analysis.processing_time_ms}ms 
-                • Model: {analysis.analysis.ai_model}
-              </div>
+  // Loading and error states
+  if (!url) {
+    return (
+      <SplitScreenLayout
+        leftContent={
+          <Card className="w-full max-w-sm">
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground mb-4">Geen URL opgegeven</p>
+              <Link href="/">
+                <Button>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Terug naar home
+                </Button>
+              </Link>
             </CardContent>
           </Card>
-        </div>
-      </div>
+        }
+        rightContent={<PremiumAdPane />}
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <SplitScreenLayout
+        leftContent={
+          <Card className="w-full max-w-sm">
+            <CardContent className="p-6 text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <Link href="/">
+                <Button>
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Probeer opnieuw
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        }
+        rightContent={<PremiumAdPane />}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <SplitScreenLayout
+        leftContent={
+          <Card className="w-full max-w-sm">
+            <CardContent className="p-6 text-center">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+              <p className="text-muted-foreground">Artikel wordt geanalyseerd...</p>
+              <p className="text-sm text-muted-foreground mt-2">Dit kan tot 5 seconden duren</p>
+            </CardContent>
+          </Card>
+        }
+        rightContent={<PremiumAdPane />}
+      />
+    );
+  }
+
+  // Main render with analysis
+  return (
+    <>
+      <SplitScreenLayout
+        leftContent={leftPaneContent}
+        rightContent={rightPaneContent}
+      />
+      <Footer />
     </>
   );
 }
