@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { AdRotationManager, SELF_PROMO_AD } from '@/lib/wallpaper-ads-config';
 
 interface PremiumAd {
@@ -16,7 +15,11 @@ interface PremiumAd {
   altText?: string;
 }
 
-export default function PremiumAdPane() {
+interface PremiumAdPaneProps {
+  onShowAdverterenInfo?: () => void;
+}
+
+export default function PremiumAdPane({ onShowAdverterenInfo }: PremiumAdPaneProps = {}) {
   const [currentAd, setCurrentAd] = useState<PremiumAd | null>(null);
   const [showSelfPromo, setShowSelfPromo] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,10 +94,14 @@ export default function PremiumAdPane() {
   // Self-promotion ad
   if (showSelfPromo && !isLoading) {
     return (
-      <Link 
-        href="/adverteren"
-        className="relative w-full h-full block group"
-        onClick={handleAdClick}
+      <div 
+        className="relative w-full h-full block group cursor-pointer"
+        onClick={() => {
+          handleAdClick();
+          if (onShowAdverterenInfo) {
+            onShowAdverterenInfo();
+          }
+        }}
       >
         <div 
           className="absolute inset-0 flex items-center justify-center"
@@ -129,7 +136,7 @@ export default function PremiumAdPane() {
             backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)`
           }} />
         </div>
-      </Link>
+      </div>
     );
   }
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import SplitScreenLayout from '@/components/layout/split-screen-layout';
 import MinimalInputCard from '@/components/homepage/minimal-input-card';
@@ -15,13 +16,26 @@ const TrustIndicators = dynamic(() => import('@/components/homepage/trust-indica
   ssr: true
 });
 
+// Import adverteren content
+const AdverterenContent = dynamic(() => import('@/components/homepage/adverteren-content'), {
+  ssr: false
+});
+
 export default function Home() {
+  const [showAdverterenInfo, setShowAdverterenInfo] = useState(false);
+
   return (
     <>
       {/* Main split-screen section */}
       <SplitScreenLayout
         leftContent={<MinimalInputCard />}
-        rightContent={<PremiumAdPane />}
+        rightContent={
+          showAdverterenInfo ? (
+            <AdverterenContent onClose={() => setShowAdverterenInfo(false)} />
+          ) : (
+            <PremiumAdPane onShowAdverterenInfo={() => setShowAdverterenInfo(true)} />
+          )
+        }
       />
       
       {/* Additional sections below the fold */}
