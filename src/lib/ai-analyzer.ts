@@ -30,11 +30,11 @@ export class AIAnalyzer {
     }
     
     this.openai = new OpenAI({
-      apiKey: openaiKey || 'sk-dummy-key-for-initialization',
+      apiKey: openaiKey || '',
     });
     
     this.anthropic = new Anthropic({
-      apiKey: anthropicKey || 'sk-ant-dummy-key-for-initialization',
+      apiKey: anthropicKey || '',
     });
 
     // Grok uses OpenAI-compatible API
@@ -60,7 +60,9 @@ export class AIAnalyzer {
       switch (model) {
         case 'openai':
         case 'gpt-4':
-          if (!hasRealKeys) return this.getMockAnalysis(content, startTime, 'gpt-4-turbo-preview');
+          if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OpenAI API key not configured');
+          }
           const openaiResult = await this.analyzeWithOpenAI(content);
           return {
             ...openaiResult,
@@ -70,7 +72,9 @@ export class AIAnalyzer {
           
         case 'anthropic':
         case 'claude':
-          if (!hasRealKeys) return this.getMockAnalysis(content, startTime, 'claude-3-sonnet');
+          if (!process.env.ANTHROPIC_API_KEY) {
+            throw new Error('Anthropic API key not configured');
+          }
           const anthropicResult = await this.analyzeWithAnthropic(content);
           return {
             ...anthropicResult,
@@ -80,7 +84,9 @@ export class AIAnalyzer {
           
         case 'grok':
         case 'xai':
-          if (!this.grok || !hasRealKeys) return this.getMockAnalysis(content, startTime, 'grok-beta');
+          if (!this.grok || !process.env.XAI_API_KEY) {
+            throw new Error('xAI API key not configured');
+          }
           const grokResult = await this.analyzeWithGrok(content);
           return {
             ...grokResult,
@@ -98,8 +104,7 @@ export class AIAnalyzer {
       }
     } catch (error) {
       console.error(`Error analyzing with ${model}:`, error);
-      // Return mock analysis as fallback
-      return this.getMockAnalysis(content, startTime, model);
+      throw error;
     }
   }
 
@@ -107,13 +112,18 @@ export class AIAnalyzer {
     const startTime = Date.now();
     
     // Check if we should use mock mode
-    const useMock = process.env.USE_MOCK_ANALYSIS === 'true' || 
-                   (!process.env.OPENAI_API_KEY || !process.env.ANTHROPIC_API_KEY);
+    const useMock = process.env.USE_MOCK_ANALYSIS === 'true';
     
     if (useMock) {
       // Return mock analysis for demonstration
       console.log('Using mock analysis for demonstration');
       return this.getMockAnalysis(content, startTime);
+    }
+    
+    // Check if API keys are available
+    if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+      console.error('No AI API keys configured');
+      throw new Error('AI service not configured. Please add API keys.');
     }
     
     try {
