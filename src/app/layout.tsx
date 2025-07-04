@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   description: "Ontdek waar mening als feit wordt gepresenteerd met onze AI-powered fact-checker voor Nederlandse nieuws",
   keywords: "fact-check, nieuws, nu.nl, AI, objectiviteit, mening, feiten",
   authors: [{ name: "nukk.nl team" }],
+  icons: {
+    icon: '/images/nukk-logo.png',
+    apple: '/images/nukk-logo.png',
+  },
   openGraph: {
     title: "nukk.nl - Check nu.nl artikelen op feiten",
     description: "Ontdek waar mening als feit wordt gepresenteerd met onze AI-powered fact-checker",
@@ -25,11 +29,20 @@ export const metadata: Metadata = {
     siteName: "nukk.nl",
     locale: "nl_NL",
     type: "website",
+    images: [
+      {
+        url: '/images/nukk-logo.png',
+        width: 1200,
+        height: 1200,
+        alt: 'nukk.nl logo',
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "nukk.nl - Check nu.nl artikelen op feiten",
     description: "AI-powered fact-checker voor Nederlandse nieuws",
+    images: ['/images/nukk-logo.png'],
   },
 };
 

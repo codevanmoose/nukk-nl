@@ -44,8 +44,12 @@ export default function MinimalInputCard() {
     <div className="w-full max-w-sm">
       {/* Logo */}
       <div className="mb-12">
-        <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-6">
-          <span className="text-white font-bold text-lg">nk</span>
+        <div className="w-16 h-16 mb-6">
+          <img 
+            src="/images/nukk-logo.png" 
+            alt="nukk.nl" 
+            className="w-full h-full object-contain"
+          />
         </div>
         
         <h1 className="text-2xl mb-2">

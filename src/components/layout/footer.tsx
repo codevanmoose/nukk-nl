@@ -7,7 +7,14 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-6">
           {/* About */}
           <div>
-            <h3 className="font-semibold mb-2">Over nukk.nl</h3>
+            <div className="flex items-center gap-2 mb-3">
+              <img 
+                src="/images/nukk-logo.png" 
+                alt="nukk.nl" 
+                className="w-8 h-8 object-contain"
+              />
+              <h3 className="font-semibold">Over nukk.nl</h3>
+            </div>
             <p className="text-sm text-muted-foreground">
               AI-powered fact-checking voor nu.nl artikelen. 
               Ontdek subjectiviteit en meningen gepresenteerd als feiten.
