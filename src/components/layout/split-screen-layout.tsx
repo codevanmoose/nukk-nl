@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 interface SplitScreenLayoutProps {
   leftContent: ReactNode;
   rightContent: ReactNode;
+  className?: string;
 }
 
 export default function SplitScreenLayout({ leftContent, rightContent }: SplitScreenLayoutProps) {

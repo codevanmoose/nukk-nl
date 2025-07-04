@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { Anthropic } from '@anthropic-ai/sdk';
 import { Annotation } from '@/types';
-import { ExtractedContent } from './content-extractor';
+import { ExtractedContent } from './scraping-service';
 
 export interface AnalysisResult {
   objectivity_score: number;
@@ -399,7 +399,7 @@ export class AIAnalyzer {
     const baseScore = 60 + (contentLength % 30);
     
     // Create mock annotations
-    const sentences = content.cleanedContent.split(/[.!?]+/).filter(s => s.trim().length > 20);
+    const sentences = content.cleanedContent.split(/[.!?]+/).filter((s: string) => s.trim().length > 20);
     const mockAnnotations: Omit<Annotation, 'id' | 'analysis_id' | 'created_at'>[] = [];
     
     // Add a few mock annotations
@@ -415,7 +415,7 @@ export class AIAnalyzer {
         confidence: 0.85 + (Math.random() * 0.15),
         start_index: content.cleanedContent.indexOf(sentence),
         end_index: content.cleanedContent.indexOf(sentence) + sentence.length,
-        explanation: `Mock analysis: This appears to be ${type === 'fact' ? 'a factual statement' : type === 'opinion' ? 'an opinion' : type === 'suggestive' ? 'suggestive language' : 'incomplete information'}.`
+        reasoning: `Mock analysis: This appears to be ${type === 'fact' ? 'a factual statement' : type === 'opinion' ? 'an opinion' : type === 'suggestive' ? 'suggestive language' : 'incomplete information'}.`
       });
     }
     
