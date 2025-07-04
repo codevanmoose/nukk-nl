@@ -6,11 +6,13 @@ Building nukk.nl - an AI-powered fact-checking platform for nu.nl articles that 
 ## 🚀 Current Status: PRODUCTION READY ✅
 Full-featured AI fact-checking platform deployed and operational at https://nukk.nl!
 
-## 📋 Recent Changes (Jan 2025)
-- **Simplified scraping architecture**: Removed custom Puppeteer, ScrapingBee, and Browserless
-- **ScrapFly-only implementation**: Now using ScrapFly as the sole scraping service
+## 📋 Recent Changes (July 2025)
+- **WeTransfer-inspired redesign**: Complete homepage transformation to split-screen layout
+- **Professional interface**: Left pane (35%) minimal input card, right pane (65%) premium ads
+- **Enhanced monetization**: Persistent ad placement replacing temporary overlays
+- **Mobile optimization**: Responsive vertical stacking for mobile devices
+- **Simplified scraping architecture**: ScrapFly-only implementation (1,000 requests/month)
 - **Enhanced reliability**: No more 403 errors or complex fallback chains
-- **API key configured**: ScrapFly API key active in production
 
 ## Development Commands
 ```bash
@@ -66,8 +68,10 @@ npm run build
 - ✅ Database storage and caching
 
 ### Phase 3: UI/UX ✅
-- ✅ Responsive homepage design
-- ✅ Hero section with URL input
+- ✅ WeTransfer-inspired split-screen design
+- ✅ Minimal input card with clean URL submission
+- ✅ Premium advertisement pane (persistent, full-height)
+- ✅ Mobile-responsive vertical stacking
 - ✅ "How it works" section
 - ✅ Trust indicators
 - ✅ Analysis page with objectivity scoring
@@ -143,16 +147,22 @@ src/
 │   ├── api/analyze/       # Single AI analysis
 │   ├── api/analyze-multi/ # Multi-model analysis
 │   ├── analyse/           # Analysis results page
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Homepage
+│   ├── layout.tsx         # Root layout (streamlined)
+│   └── page.tsx           # Homepage (split-screen)
 ├── components/            # React components
-│   ├── analysis-highlights.tsx     # Color-coded text annotations
-│   ├── multi-model-analysis.tsx    # AI model comparison
-│   ├── homepage/                   # Homepage sections
-│   └── ui/                        # Shadcn/ui components
+│   ├── layout/
+│   │   └── split-screen-layout.tsx    # WeTransfer-style layout
+│   ├── homepage/
+│   │   └── minimal-input-card.tsx     # Clean URL input card
+│   ├── ads/
+│   │   └── premium-ad-pane.tsx        # Full-height ad display
+│   ├── analysis-highlights.tsx        # Color-coded text annotations
+│   ├── multi-model-analysis.tsx       # AI model comparison
+│   └── ui/                           # Shadcn/ui components
 ├── lib/                   # Core functionality
 │   ├── scraping-service.ts        # ScrapFly integration
 │   ├── ai-analyzer.ts             # Multi-model AI engine
+│   ├── wallpaper-ads-config.ts    # Ad pricing & rotation
 │   ├── content-extractor.ts       # Content export module
 │   └── supabase.ts                # Database client
 ├── types/                 # TypeScript definitions
@@ -179,40 +189,50 @@ src/
 - **Text annotations** - Color-coded highlighting
 
 ### ✅ User Experience
+- **WeTransfer-inspired design** - Professional split-screen interface
+- **Minimal input card** - Clean, distraction-free URL submission
+- **Premium ad integration** - Full-height, always-visible advertising
 - **Instant analysis** - Enter nu.nl URL, get results
 - **Visual breakdown** - Progress bars, color coding
 - **Multi-model comparison** - See how different AIs analyze
-- **Mobile responsive** - Works on all devices
-- **Fast loading** - Optimized for speed
+- **Mobile responsive** - Vertical stacking on mobile devices
+- **Fast loading** - Optimized for speed and Core Web Vitals
 
 ## Key Production Considerations
+- ✅ WeTransfer-inspired professional design for premium advertising
 - ✅ Real API keys configured (no demo content)
 - ✅ Professional scraping with ScrapFly (1,000 free requests/month)
 - ✅ Multi-model AI provides reliability through consensus
+- ✅ Enhanced monetization with persistent ad placement
 - ✅ Proper error handling for production environment
-- ✅ Mobile-responsive design
+- ✅ Mobile-responsive split-screen to vertical stacking
 - ✅ Fast page load times (<2 seconds)
 - ✅ GDPR-compliant data handling
 - ✅ Cost optimization (free tier covers typical usage)
 
 ## Testing Checklist ✅
+- ✅ WeTransfer-style split-screen layout functional
+- ✅ Premium ad pane displays correctly
+- ✅ Mobile vertical stacking responsive
 - ✅ All API endpoints return real data
 - ✅ URL redirect works for all nu.nl formats
 - ✅ AI analysis completes in <5 seconds
 - ✅ Multi-model comparison functional
-- ✅ Mobile layout is responsive
 - ✅ Error states are handled gracefully
 - ✅ ScrapFly reliably scrapes nu.nl articles
+- ✅ Ad rotation and tracking system operational
 
 ## 🚀 READY FOR USE
 **Visit https://nukk.nl and paste any nu.nl article URL to experience AI-powered fact-checking!**
 
 Features available:
+- WeTransfer-inspired split-screen design
 - Real-time article scraping and analysis
 - Objectivity scoring with detailed breakdown
 - Color-coded text highlighting
 - Multi-model AI comparison
-- Mobile-responsive interface
+- Premium advertisement integration
+- Mobile-responsive interface with vertical stacking
 
 ## API Keys Setup (For Local Development)
 See `setup-api-keys.md` for local environment configuration.
