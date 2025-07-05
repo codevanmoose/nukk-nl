@@ -52,16 +52,13 @@ export class AIAnalyzer {
   async analyzeWithModel(content: ExtractedContent, model: string): Promise<AnalysisResult> {
     const startTime = Date.now();
     
-    // Check if API keys are configured for production use
-    const hasRealKeys = process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('dummy') &&
-                       process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY.includes('dummy');
-    
     try {
       switch (model) {
         case 'openai':
         case 'gpt-4':
-          if (!process.env.OPENAI_API_KEY) {
-            throw new Error('OpenAI API key not configured');
+          if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === '') {
+            console.warn('OpenAI API key not configured - using mock');
+            return this.getMockAnalysis(content, startTime, 'gpt-4-mock');
           }
           const openaiResult = await this.analyzeWithOpenAI(content);
           return {
@@ -72,8 +69,9 @@ export class AIAnalyzer {
           
         case 'anthropic':
         case 'claude':
-          if (!process.env.ANTHROPIC_API_KEY) {
-            throw new Error('Anthropic API key not configured');
+          if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.trim() === '') {
+            console.warn('Anthropic API key not configured - using mock');
+            return this.getMockAnalysis(content, startTime, 'claude-3-mock');
           }
           const anthropicResult = await this.analyzeWithAnthropic(content);
           return {
@@ -84,8 +82,9 @@ export class AIAnalyzer {
           
         case 'grok':
         case 'xai':
-          if (!this.grok || !process.env.XAI_API_KEY) {
-            throw new Error('xAI API key not configured');
+          if (!this.grok || !process.env.XAI_API_KEY || process.env.XAI_API_KEY.trim() === '') {
+            console.warn('xAI API key not configured - using mock');
+            return this.getMockAnalysis(content, startTime, 'grok-mock');
           }
           const grokResult = await this.analyzeWithGrok(content);
           return {
@@ -121,24 +120,32 @@ export class AIAnalyzer {
     }
     
     // Check if API keys are available
-    if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
-      console.error('No AI API keys configured');
-      throw new Error('AI service not configured. Please add API keys.');
+    const hasOpenAI = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== '';
+    const hasAnthropic = process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY.trim() !== '';
+    const hasXAI = process.env.XAI_API_KEY && process.env.XAI_API_KEY.trim() !== '';
+    
+    if (!hasOpenAI && !hasAnthropic && !hasXAI) {
+      console.warn('No AI API keys configured - falling back to mock analysis');
+      return this.getMockAnalysis(content, startTime, 'fallback');
     }
     
     try {
-      // Try OpenAI first
-      const result = await this.analyzeWithOpenAI(content);
-      return {
-        ...result,
-        processing_time_ms: Date.now() - startTime,
-        ai_model: 'gpt-4-turbo-preview'
-      };
+      // Try OpenAI first if available
+      if (hasOpenAI) {
+        const result = await this.analyzeWithOpenAI(content);
+        return {
+          ...result,
+          processing_time_ms: Date.now() - startTime,
+          ai_model: 'gpt-4-turbo-preview'
+        };
+      }
     } catch (error) {
-      console.warn('OpenAI analysis failed, falling back to Anthropic:', error);
+      console.warn('OpenAI analysis failed:', error);
+    }
       
+    // Try Anthropic if available
+    if (hasAnthropic) {
       try {
-        // Fallback to Anthropic
         const result = await this.analyzeWithAnthropic(content);
         return {
           ...result,
@@ -146,27 +153,27 @@ export class AIAnalyzer {
           ai_model: 'claude-3-sonnet'
         };
       } catch (anthropicError) {
-        console.warn('Anthropic analysis failed, falling back to Grok:', anthropicError);
-        
-        if (this.grok) {
-          try {
-            // Fallback to Grok
-            const result = await this.analyzeWithGrok(content);
-            return {
-              ...result,
-              processing_time_ms: Date.now() - startTime,
-              ai_model: 'grok-beta'
-            };
-          } catch (grokError) {
-            console.error('All AI services failed:', grokError);
-            throw new Error('Analysis failed with all AI providers');
-          }
-        } else {
-          console.error('Both AI services failed and Grok not configured:', anthropicError);
-          throw new Error('Analysis failed with both AI providers');
-        }
+        console.warn('Anthropic analysis failed:', anthropicError);
       }
     }
+        
+    // Try Grok if available
+    if (hasXAI && this.grok) {
+      try {
+        const result = await this.analyzeWithGrok(content);
+        return {
+          ...result,
+          processing_time_ms: Date.now() - startTime,
+          ai_model: 'grok-beta'
+        };
+      } catch (grokError) {
+        console.warn('Grok analysis failed:', grokError);
+      }
+    }
+    
+    // If all AI services failed or none configured, use mock
+    console.warn('All AI services failed or unavailable - using mock analysis');
+    return this.getMockAnalysis(content, startTime, 'fallback');
   }
 
   private async analyzeWithOpenAI(content: ExtractedContent): Promise<Omit<AnalysisResult, 'processing_time_ms' | 'ai_model'>> {

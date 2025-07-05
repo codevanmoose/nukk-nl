@@ -5,13 +5,29 @@ import { useEffect, useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
-import { AnalysisResponse } from '@/types';
+import { AnalysisResponse, Analysis } from '@/types';
 import { ArrowLeft, ExternalLink, Loader2, Brain, Sparkles, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { AnalysisHighlights } from '@/components/analysis-highlights';
 import { MultiModelAnalysis } from '@/components/multi-model-analysis';
+
+interface ModelAnalysis {
+  model: string;
+  provider: string;
+  icon: React.ReactNode;
+  analysis: Analysis;
+  annotations: Array<{
+    id?: string;
+    type: string;
+    text: string;
+    reasoning: string;
+    confidence: number;
+    start_index: number;
+    end_index: number;
+    created_at?: string;
+  }>;
+}
 import SplitScreenLayout from '@/components/layout/split-screen-layout';
-import PremiumAdPane from '@/components/ads/premium-ad-pane';
 import Footer from '@/components/layout/footer';
 
 function AnalyseContent() {
@@ -21,8 +37,8 @@ function AnalyseContent() {
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showMultiModel, setShowMultiModel] = useState(false);
-  const [multiModelAnalyses, setMultiModelAnalyses] = useState<any[]>([]);
+  const [multiModelAnalyses, setMultiModelAnalyses] = useState<ModelAnalysis[]>([]);
+  const [isLoadingMultiModel, setIsLoadingMultiModel] = useState(false);
 
   useEffect(() => {
     if (url && isValidNuUrl(url)) {
@@ -30,6 +46,7 @@ function AnalyseContent() {
     } else if (url) {
       setError('Ongeldige nu.nl URL');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   const analyzeArticle = async (articleUrl: string) => {
@@ -57,20 +74,28 @@ function AnalyseContent() {
       });
       
       if (!response.ok) {
-        throw new Error(data.error || 'Analyse mislukt');
+        console.error('API Error Response:', data);
+        if (data.error && data.error.includes('AI service not configured')) {
+          throw new Error('AI analyse service is momenteel niet beschikbaar. Probeer het later opnieuw.');
+        }
+        throw new Error(data.error || 'Analyse mislukt. Probeer het later opnieuw.');
       }
 
       if (data.error) {
+        console.error('Error in response data:', data.error);
         throw new Error(data.error);
       }
 
       // Check if we have valid analysis data
       if (!data.analysis || typeof data.analysis.objectivity_score !== 'number') {
         console.error('Invalid analysis data:', data);
-        throw new Error('Ongeldige analyse data ontvangen');
+        throw new Error('Ongeldige analyse data ontvangen. Probeer het opnieuw.');
       }
 
       setAnalysis(data as AnalysisResponse);
+      
+      // Automatically fetch multi-model analyses
+      fetchMultiModelAnalyses(normalizedUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Er is een fout opgetreden');
     } finally {
@@ -78,11 +103,10 @@ function AnalyseContent() {
     }
   };
 
-  const fetchMultiModelAnalyses = async () => {
-    if (!url) return;
+  const fetchMultiModelAnalyses = async (normalizedUrl: string) => {
+    setIsLoadingMultiModel(true);
     
     try {
-      const normalizedUrl = normalizeNuUrl(url);
       const response = await fetch('/api/analyze-multi', {
         method: 'POST',
         headers: {
@@ -90,16 +114,16 @@ function AnalyseContent() {
         },
         body: JSON.stringify({ 
           url: normalizedUrl,
-          models: ['openai', 'anthropic', 'gemini']
+          models: ['openai', 'anthropic', 'grok'] // Fixed: use 'grok' instead of 'gemini'
         }),
       });
 
       const data = await response.json();
       
       if (response.ok && data.analyses) {
-        const formattedAnalyses = data.analyses.map((item: any) => ({
-          model: item.model === 'openai' ? 'gpt-4' : item.model === 'anthropic' ? 'claude-3' : 'gemini',
-          provider: item.model === 'openai' ? 'OpenAI' : item.model === 'anthropic' ? 'Anthropic' : 'Google',
+        const formattedAnalyses = data.analyses.map((item: { model: string; analysis: Analysis; annotations: Array<{ id?: string; type: string; text: string; reasoning: string; confidence: number; start_index: number; end_index: number; created_at?: string }> }) => ({
+          model: item.model === 'openai' ? 'gpt-4' : item.model === 'anthropic' ? 'claude-3' : 'grok',
+          provider: item.model === 'openai' ? 'OpenAI' : item.model === 'anthropic' ? 'Anthropic' : 'xAI',
           icon: item.model === 'openai' ? <Brain className="w-4 h-4" /> : 
                 item.model === 'anthropic' ? <Sparkles className="w-4 h-4" /> : 
                 <Zap className="w-4 h-4" />,
@@ -110,6 +134,8 @@ function AnalyseContent() {
       }
     } catch (error) {
       console.error('Failed to fetch multi-model analyses:', error);
+    } finally {
+      setIsLoadingMultiModel(false);
     }
   };
 
@@ -206,26 +232,12 @@ function AnalyseContent() {
         </Card>
       )}
 
-      {/* Multi-Model Toggle */}
-      {analysis && (
+      {/* Multi-Model Status */}
+      {analysis && isLoadingMultiModel && (
         <Card className="mt-4 p-3 bg-blue-50 border-blue-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium">Vergelijk AI Modellen</span>
-            </div>
-            <Button 
-              variant={showMultiModel ? "default" : "outline"}
-              size="sm"
-              onClick={async () => {
-                if (!showMultiModel && multiModelAnalyses.length === 0) {
-                  await fetchMultiModelAnalyses();
-                }
-                setShowMultiModel(!showMultiModel);
-              }}
-            >
-              {showMultiModel ? 'Verberg' : 'Toon'}
-            </Button>
+          <div className="flex items-center gap-2">
+            <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+            <span className="text-sm font-medium">AI modellen laden...</span>
           </div>
         </Card>
       )}
@@ -235,31 +247,35 @@ function AnalyseContent() {
   // Right pane content with analysis overlay
   const rightPaneContent = (
     <div className="relative h-full w-full">
-      {/* Background Ad */}
-      <PremiumAdPane />
+      {/* Background Ad - Always show the gradient background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900" />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
       
       {/* Analysis Overlay */}
       {analysis && (
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-sm overflow-y-auto">
-          <div className="p-8">
-            {/* Multi-Model Analysis */}
-            {showMultiModel && multiModelAnalyses.length > 0 && (
-              <div className="mb-6">
-                <MultiModelAnalysis analyses={multiModelAnalyses} />
-              </div>
+        <div className="absolute inset-0 overflow-y-auto">
+          <div className="p-8 space-y-6">
+            {/* Multi-Model Analysis - Always show when available */}
+            {multiModelAnalyses.length > 0 && (
+              <MultiModelAnalysis analyses={multiModelAnalyses} />
             )}
             
-            {showMultiModel && multiModelAnalyses.length === 0 && (
-              <Card className="p-6 mb-6">
-                <div className="flex items-center justify-center space-x-2">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span className="text-muted-foreground">Multi-model analyses laden...</span>
-                </div>
+            {/* Loading indicator for multi-model analyses */}
+            {isLoadingMultiModel && multiModelAnalyses.length === 0 && (
+              <Card className="bg-white/95 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="text-muted-foreground">AI modellen analyseren het artikel...</span>
+                  </div>
+                </CardContent>
               </Card>
             )}
 
             {/* Detailed Text Analysis */}
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle>Gedetailleerde Tekstanalyse</CardTitle>
               </CardHeader>
@@ -297,7 +313,14 @@ function AnalyseContent() {
             </CardContent>
           </Card>
         }
-        rightContent={<PremiumAdPane />}
+        rightContent={
+          <div className="relative h-full w-full">
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900" />
+              <div className="absolute inset-0 bg-black/20" />
+            </div>
+          </div>
+        }
       />
     );
   }
@@ -318,7 +341,14 @@ function AnalyseContent() {
             </CardContent>
           </Card>
         }
-        rightContent={<PremiumAdPane />}
+        rightContent={
+          <div className="relative h-full w-full">
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900" />
+              <div className="absolute inset-0 bg-black/20" />
+            </div>
+          </div>
+        }
       />
     );
   }
@@ -335,7 +365,14 @@ function AnalyseContent() {
             </CardContent>
           </Card>
         }
-        rightContent={<PremiumAdPane />}
+        rightContent={
+          <div className="relative h-full w-full">
+            <div className="absolute inset-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900" />
+              <div className="absolute inset-0 bg-black/20" />
+            </div>
+          </div>
+        }
       />
     );
   }

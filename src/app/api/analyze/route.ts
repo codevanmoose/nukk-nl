@@ -6,11 +6,16 @@ import { getAIAnalyzer } from '@/lib/ai-analyzer';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function POST(request: NextRequest) {
+  console.log('[Analyze API] Request received');
+  
   try {
     const body = await request.json();
     const { url } = body;
+    
+    console.log('[Analyze API] URL:', url);
 
     if (!url || !isValidNuUrl(url)) {
+      console.error('[Analyze API] Invalid URL:', url);
       return NextResponse.json(
         { error: 'Invalid nu.nl URL provided' },
         { status: 400 }
@@ -43,8 +48,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract content from nu.nl
+    console.log('[Analyze API] Scraping article...');
     const scraper = getScrapingService();
     const extractedContent = await scraper.scrapeNuNl(normalizedUrl);
+    console.log('[Analyze API] Article scraped successfully');
     
     // Store or update article
     const { data: article, error: articleError } = await supabaseAdmin
@@ -65,8 +72,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Analyze with AI
+    console.log('[Analyze API] Starting AI analysis...');
     const analyzer = getAIAnalyzer();
     const analysisResult = await analyzer.analyzeContent(extractedContent);
+    console.log('[Analyze API] AI analysis completed');
     
     // Store analysis
     const { data: analysis, error: analysisError } = await supabaseAdmin

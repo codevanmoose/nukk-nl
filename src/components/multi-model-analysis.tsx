@@ -35,15 +35,15 @@ export function MultiModelAnalysis({ analyses }: MultiModelAnalysisProps) {
       description: 'Anthropic\'s genuanceerde analyse',
       color: 'bg-purple-500'
     },
-    'gemini-pro': {
-      name: 'Gemini',
-      description: 'Google\'s multimodale model',
+    'grok-2': {
+      name: 'Grok',
+      description: 'xAI\'s directe analyse',
       color: 'bg-blue-500'
     }
   };
 
   return (
-    <Card>
+    <Card className="bg-white/95 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="w-5 h-5" />
