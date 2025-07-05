@@ -10,6 +10,8 @@ import { ArrowLeft, ExternalLink, Loader2, Brain, Sparkles, Zap } from 'lucide-r
 import Link from 'next/link';
 import { AnalysisHighlights } from '@/components/analysis-highlights';
 import { MultiModelAnalysis } from '@/components/multi-model-analysis';
+import SplitScreenLayout from '@/components/layout/split-screen-layout';
+import Footer from '@/components/layout/footer';
 
 interface ModelAnalysis {
   model: string;
@@ -27,8 +29,6 @@ interface ModelAnalysis {
     created_at?: string;
   }>;
 }
-import SplitScreenLayout from '@/components/layout/split-screen-layout';
-import Footer from '@/components/layout/footer';
 
 function AnalyseContent() {
   const searchParams = useSearchParams();
