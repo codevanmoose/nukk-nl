@@ -18,6 +18,9 @@ Full-featured AI fact-checking platform deployed and operational at https://nukk
 - **Improved UX Flow**: "Ontdek de mogelijkheden" now shows adverteren info in right panel
 - **Google Analytics**: Added GA4 tracking with measurement ID G-EQTEDY3XMD
 - **Brand Identity**: Integrated nukk.nl logo (blue circle with white text) throughout the site
+- **Analysis Page Overhaul**: Always-on multi-model AI analysis with gradient background overlay
+- **Improved Content Extraction**: Enhanced nu.nl scraping patterns with fallback mechanisms
+- **Fixed Hydration Issues**: Resolved React SSR/client hydration mismatches
 
 ## Development Commands
 ```bash
@@ -67,10 +70,11 @@ npm run build
 - ✅ Homepage with URL input validation
 - ✅ Professional web scraping with ScrapFly
 - ✅ AI analysis engine (OpenAI + Anthropic + Grok)
-- ✅ Multi-model AI comparison feature
+- ✅ Multi-model AI comparison feature (always-on)
 - ✅ URL redirect system (nukk.nl/path → analysis)
-- ✅ Analysis results page with interactive UI
+- ✅ Analysis results page with gradient background overlay
 - ✅ Database storage and caching
+- ✅ Enhanced content extraction with fallback patterns
 
 ### Phase 3: UI/UX ✅
 - ✅ WeTransfer-inspired split-screen design
@@ -79,11 +83,12 @@ npm run build
 - ✅ Mobile-responsive vertical stacking
 - ✅ "How it works" section
 - ✅ Trust indicators
-- ✅ Analysis page with objectivity scoring
+- ✅ Analysis page with objectivity scoring and gradient background
 - ✅ Visual progress bars and breakdowns
 - ✅ Loading states and error handling
 - ✅ Text highlighting with color-coded annotations
-- ✅ Multi-model comparison tabs
+- ✅ Always-visible multi-model AI analysis (no toggle required)
+- ✅ Semi-transparent overlay cards on advertisement background
 
 ### Phase 4: Production Deployment ✅
 - ✅ ScrapFly integration (1,000 free requests/month)
@@ -188,6 +193,44 @@ src/
 └── middleware.ts          # URL redirect handling
 ```
 
+## 🔧 RECENT TECHNICAL IMPROVEMENTS (July 5, 2025)
+
+### Content Extraction Enhancements
+```typescript
+// Located in: src/lib/scraping-service.ts
+- Multiple fallback patterns for title, author, and content extraction
+- Paragraph extraction as backup when main article patterns fail
+- Enhanced regex patterns for nu.nl HTML structure changes
+- Debug logging for extraction diagnostics
+- Title cleanup to remove site suffix (| NU.nl)
+```
+
+### Analysis Page Overhaul
+```typescript
+// Located in: src/app/analyse/page.tsx
+- Removed "Vergelijk AI modellen" toggle - always show all AI analyses
+- Automatic multi-model analysis on page load
+- Gradient background overlay (blue-purple-pink) matching landing page
+- Semi-transparent analysis cards (bg-white/95 backdrop-blur-sm)
+- Fixed React hydration mismatches by avoiding inline JSX creation
+```
+
+### Middleware URL Pattern Fix
+```typescript
+// Located in: src/middleware.ts
+- Fixed regex pattern for nu.nl article URL recognition
+- Pattern: /^\/[a-z-]+\/\d+\/[a-z0-9-]+\.html?$/i
+- Ensures proper redirect to analysis page for article URLs
+```
+
+### React SSR/Hydration Fixes
+```typescript
+// Located in: src/components/multi-model-analysis.tsx
+- Replaced inline icon creation with modelType string approach
+- Dynamic icon generation in component to prevent hydration mismatches
+- Consistent server/client rendering for React elements
+```
+
 ## 🎯 PRODUCTION FEATURES
 
 ### ✅ Web Scraping (ScrapFly)
@@ -212,7 +255,7 @@ src/
 - **Premium ad integration** - Full-height, always-visible advertising
 - **Instant analysis** - Enter nu.nl URL, get results
 - **Visual breakdown** - Progress bars, color coding
-- **Multi-model comparison** - See how different AIs analyze
+- **Always-on multi-model comparison** - Automatic analysis by all AI models without toggle
 - **Mobile responsive** - Vertical stacking on mobile devices
 - **Fast loading** - Optimized for speed and Core Web Vitals
 - **Smart UI flow** - URL input always accessible, adverteren info in right panel
@@ -240,7 +283,7 @@ src/
 - ✅ All API endpoints return real data (no mock mode)
 - ✅ URL redirect works for all nu.nl formats
 - ✅ AI analysis completes in <5 seconds
-- ✅ Multi-model comparison functional
+- ✅ Always-on multi-model comparison functional
 - ✅ Error states are handled gracefully
 - ✅ ScrapFly reliably scrapes nu.nl articles
 - ✅ Ad rotation and tracking system operational
@@ -278,7 +321,17 @@ See `TODO.md` for upcoming tasks and future enhancements.
 - **Database**: Supabase PostgreSQL
 - **CDN**: Vercel Edge Network
 
-## 📅 Last Session Summary (July 4, 2025)
+## 📅 Latest Session Summary (July 5, 2025)
+Completed critical analysis improvements and bug fixes:
+1. **Analysis Page Overhaul**: Removed toggle requirement - multi-model analysis now automatic
+2. **Enhanced UI/UX**: Added gradient background overlay with semi-transparent analysis cards
+3. **Content Extraction Fix**: Improved nu.nl scraping patterns with multiple fallback mechanisms
+4. **Middleware Fix**: Corrected URL pattern validation for proper nu.nl article recognition
+5. **Client-Side Error Resolution**: Fixed React hydration mismatch causing application crashes
+6. **Production Stability**: All analysis functionality now working reliably in production
+7. **Documentation Updates**: Updated CLAUDE.md with all session changes for continuity
+
+## 📅 Previous Session Summary (July 4, 2025)
 Completed major production improvements:
 1. **Layout Consistency**: Applied WeTransfer-style split-screen to all pages
 2. **Error Resolution**: Fixed analysis functionality and client-side errors
@@ -290,11 +343,12 @@ Completed major production improvements:
 
 ## 🎯 Next Session Focus
 Suggested priorities for future development:
-1. **Performance Optimization**: Implement caching strategies for API calls
-2. **User Feedback**: Add feedback collection after analyses
-3. **Advanced Features**: Trending articles, saved analyses dashboard
-4. **SEO Enhancement**: Meta tags, structured data, sitemap
-5. **Monitoring**: Error tracking, performance monitoring
-6. **A/B Testing**: Optimize conversion rates for ads
-7. **Accessibility**: WCAG compliance improvements
-8. **Internationalization**: English language support
+1. **Performance Monitoring**: Monitor analysis response times and optimize if needed
+2. **User Feedback System**: Add feedback collection after analyses for quality improvement
+3. **Content Quality**: Monitor scraping success rates and adjust patterns as nu.nl evolves
+4. **Advanced Features**: Trending articles, saved analyses dashboard, user accounts
+5. **SEO Enhancement**: Meta tags, structured data, sitemap for better discoverability
+6. **Analytics Deep Dive**: Use GA4 data to optimize user experience and conversion
+7. **A/B Testing**: Test different ad placements and analysis presentations
+8. **Accessibility**: WCAG compliance improvements for broader accessibility
+9. **Internationalization**: English language support for international users

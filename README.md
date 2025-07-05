@@ -7,20 +7,23 @@ AI-powered fact-checking platform that analyzes nu.nl articles to detect subject
 ## Features
 
 - 🔍 **URL Analysis**: Simply paste a nu.nl URL to get instant fact-checking
-- 🧠 **AI-Powered**: Uses OpenAI GPT-4 with Anthropic Claude fallback for analysis
+- 🧠 **Multi-AI Analysis**: Uses OpenAI GPT-4, Anthropic Claude 3, and xAI Grok for comprehensive analysis
 - 📊 **Objectivity Scoring**: Get a 0-100 objectivity score with detailed breakdown
 - 🎯 **Content Classification**: Identifies facts, opinions, suggestive language, and incomplete information
 - 🔄 **Smart Redirects**: Support nukk.nl/path URLs that automatically redirect to analysis
 - 💾 **Caching**: Stores analyses to avoid re-processing the same articles
+- 🎨 **Professional UI**: WeTransfer-inspired split-screen design with gradient backgrounds
+- 📱 **Mobile Responsive**: Optimized for all device sizes
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14+, TypeScript, Tailwind CSS, Shadcn/ui
-- **Backend**: Next.js API Routes, Node.js
-- **AI**: OpenAI GPT-4, Anthropic Claude 3 (fallback)
+- **Frontend**: Next.js 15.3.3, TypeScript, Tailwind CSS, Shadcn/ui
+- **Backend**: Next.js API Routes, Node.js 20+
+- **AI**: OpenAI GPT-4, Anthropic Claude 3, xAI Grok (multi-model analysis)
 - **Database**: PostgreSQL (Supabase)
-- **Web Scraping**: Puppeteer
-- **Deployment**: Vercel (frontend), Google Cloud Run (backend)
+- **Web Scraping**: ScrapFly service (1,000 free requests/month)
+- **Infrastructure**: Vercel (production), ScrapFly (free tier)
+- **Analytics**: Google Analytics GA4
 
 ## Getting Started
 
@@ -29,14 +32,16 @@ AI-powered fact-checking platform that analyzes nu.nl articles to detect subject
 - Node.js 20+
 - PostgreSQL database (or Supabase account)
 - OpenAI API key
-- Anthropic API key (optional, for fallback)
+- Anthropic API key (optional)
+- xAI API key (optional)
+- ScrapFly API key (for web scraping)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/nukk.git
-cd nukk
+git clone https://github.com/codevanmoose/nukk-nl.git
+cd nukk-nl
 ```
 
 2. Install dependencies:
@@ -59,9 +64,10 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 # AI APIs
 OPENAI_API_KEY=your_openai_api_key
 ANTHROPIC_API_KEY=your_anthropic_api_key
+XAI_API_KEY=your_xai_api_key
 
-# Redis (optional, for production)
-REDIS_URL=redis://localhost:6379
+# Web Scraping
+SCRAPFLY_API_KEY=your_scrapfly_api_key
 
 # Application
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -84,10 +90,10 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 ## Usage
 
 ### Basic Analysis
-1. Go to the homepage
-2. Paste a nu.nl article URL
-3. Click "Analyseer artikel"
-4. View the objectivity score and breakdown
+1. Go to the homepage at [nukk.nl](https://nukk.nl)
+2. Paste a nu.nl article URL in the input field
+3. Click "Analyseer artikel" or press Enter
+4. View the objectivity score and detailed multi-model analysis
 
 ### URL Redirects
 You can also use nukk.nl URLs directly:
@@ -126,7 +132,7 @@ src/
 
 ### POST /api/analyze
 
-Analyzes a nu.nl article URL.
+Analyzes a nu.nl article URL with a single AI model.
 
 **Request:**
 ```json
@@ -154,6 +160,42 @@ Analyzes a nu.nl article URL.
     "processing_time_ms": 3500
   },
   "annotations": []
+}
+```
+
+### POST /api/analyze-multi
+
+Analyzes a nu.nl article URL with multiple AI models for comparison.
+
+**Request:**
+```json
+{
+  "url": "https://www.nu.nl/article-path",
+  "models": ["openai", "anthropic", "grok"]
+}
+```
+
+**Response:**
+```json
+{
+  "article": { /* same as above */ },
+  "analyses": [
+    {
+      "model": "openai",
+      "analysis": { /* analysis object */ },
+      "annotations": []
+    },
+    {
+      "model": "anthropic", 
+      "analysis": { /* analysis object */ },
+      "annotations": []
+    },
+    {
+      "model": "grok",
+      "analysis": { /* analysis object */ }, 
+      "annotations": []
+    }
+  ]
 }
 ```
 
