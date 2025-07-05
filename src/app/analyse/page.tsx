@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { isValidNuUrl, normalizeNuUrl } from '@/utils/url-validation';
 import { AnalysisResponse, Analysis } from '@/types';
-import { ArrowLeft, ExternalLink, Loader2, Brain, Sparkles, Zap } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { AnalysisHighlights } from '@/components/analysis-highlights';
 import { MultiModelAnalysis } from '@/components/multi-model-analysis';
@@ -16,7 +16,7 @@ import Footer from '@/components/layout/footer';
 interface ModelAnalysis {
   model: string;
   provider: string;
-  icon: React.ReactNode;
+  modelType: string;
   analysis: Analysis;
   annotations: Array<{
     id?: string;
@@ -124,9 +124,7 @@ function AnalyseContent() {
         const formattedAnalyses = data.analyses.map((item: { model: string; analysis: Analysis; annotations: Array<{ id?: string; type: string; text: string; reasoning: string; confidence: number; start_index: number; end_index: number; created_at?: string }> }) => ({
           model: item.model === 'openai' ? 'gpt-4' : item.model === 'anthropic' ? 'claude-3' : 'grok',
           provider: item.model === 'openai' ? 'OpenAI' : item.model === 'anthropic' ? 'Anthropic' : 'xAI',
-          icon: item.model === 'openai' ? <Brain className="w-4 h-4" /> : 
-                item.model === 'anthropic' ? <Sparkles className="w-4 h-4" /> : 
-                <Zap className="w-4 h-4" />,
+          modelType: item.model,
           analysis: item.analysis,
           annotations: item.annotations || []
         }));

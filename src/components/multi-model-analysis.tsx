@@ -10,7 +10,7 @@ import { Analysis } from '@/types';
 interface ModelAnalysis {
   model: string;
   provider: string;
-  icon: React.ReactNode;
+  modelType: string;
   analysis: Analysis;
   loading?: boolean;
   error?: string;
@@ -22,6 +22,19 @@ interface MultiModelAnalysisProps {
 
 export function MultiModelAnalysis({ analyses }: MultiModelAnalysisProps) {
   const [activeTab, setActiveTab] = useState(analyses[0]?.model || 'gpt-4');
+
+  const getIcon = (modelType: string) => {
+    switch (modelType) {
+      case 'openai':
+        return <Brain className="w-4 h-4" />;
+      case 'anthropic':
+        return <Sparkles className="w-4 h-4" />;
+      case 'grok':
+        return <Zap className="w-4 h-4" />;
+      default:
+        return <Brain className="w-4 h-4" />;
+    }
+  };
 
   // Model metadata
   const modelInfo: Record<string, { name: string; description: string; color: string }> = {
@@ -67,7 +80,7 @@ export function MultiModelAnalysis({ analyses }: MultiModelAnalysisProps) {
                   value={modelAnalysis.model}
                   className="flex items-center gap-2"
                 >
-                  {modelAnalysis.icon}
+                  {getIcon(modelAnalysis.modelType)}
                   {info.name}
                 </TabsTrigger>
               );
