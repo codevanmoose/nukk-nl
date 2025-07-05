@@ -75,6 +75,12 @@ export class ScrapingService {
       }
 
       console.log('ScrapFly successfully retrieved content, length:', html.length);
+      
+      // Debug: Save a sample of the HTML to understand structure
+      if (process.env.NODE_ENV === 'development') {
+        console.log('HTML sample (first 1000 chars):', html.substring(0, 1000));
+      }
+      
       return this.parseNuNlHtml(html, url);
     } catch (error) {
       console.error('ScrapFly failed:', error);
@@ -85,19 +91,28 @@ export class ScrapingService {
 
   private parseNuNlHtml(html: string, url: string): ExtractedContent {
     // Use regex patterns to extract content from HTML
-    const titleMatch = html.match(/<h1[^>]*>(.*?)<\/h1>/is);
-    const title = titleMatch ? this.decodeHtml(titleMatch[1]) : 'Untitled Article';
+    // Try multiple title patterns
+    const titleMatch = html.match(/<h1[^>]*class="[^"]*title[^"]*"[^>]*>(.*?)<\/h1>/is) ||
+                      html.match(/<h1[^>]*>(.*?)<\/h1>/is) ||
+                      html.match(/<title[^>]*>(.*?)<\/title>/is);
+    const title = titleMatch ? this.decodeHtml(titleMatch[1]).replace(/\s*\|\s*NU\.nl.*$/i, '').trim() : 'Untitled Article';
 
-    const authorMatch = html.match(/class="author"[^>]*>(.*?)<\/[^>]+>/is) ||
-                       html.match(/by\s+([^<]+)/i);
+    // Try multiple author patterns
+    const authorMatch = html.match(/class="[^"]*author[^"]*"[^>]*>(.*?)<\/[^>]+>/is) ||
+                       html.match(/door\s+([^<\n]+)/i) ||
+                       html.match(/by\s+([^<\n]+)/i);
     const author = authorMatch ? this.decodeHtml(authorMatch[1]).trim() : null;
 
-    const timeMatch = html.match(/<time[^>]*datetime="([^"]+)"/i);
+    // Try multiple time patterns
+    const timeMatch = html.match(/<time[^>]*datetime="([^"]+)"/i) ||
+                     html.match(/datetime="([^"]+)"/i);
     const publishedAt = timeMatch ? new Date(timeMatch[1]) : new Date();
 
-    // Extract article body
+    // Extract article body with multiple patterns
     const articleMatch = html.match(/<article[^>]*>(.*?)<\/article>/is) ||
-                        html.match(/class="article-body"[^>]*>(.*?)<\/div>/is);
+                        html.match(/class="[^"]*article-body[^"]*"[^>]*>(.*?)<\/div>/is) ||
+                        html.match(/class="[^"]*content[^"]*"[^>]*>(.*?)<\/div>/is) ||
+                        html.match(/class="[^"]*article-content[^"]*"[^>]*>(.*?)<\/div>/is);
     
     let rawContent = '';
     if (articleMatch) {
@@ -110,9 +125,26 @@ export class ScrapingService {
         .trim();
       
       rawContent = this.decodeHtml(rawContent);
+    } else {
+      // Fallback: extract all paragraphs
+      console.log('Article extraction failed, trying paragraph extraction...');
+      const paragraphs = html.match(/<p[^>]*>(.*?)<\/p>/gis) || [];
+      rawContent = paragraphs
+        .map(p => p.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
+        .filter(p => p.length > 50) // Only keep substantial paragraphs
+        .map(p => this.decodeHtml(p))
+        .join('\n\n');
     }
 
     const cleanedContent = this.cleanContent(rawContent);
+
+    // Debug logging
+    console.log('Extraction results:', {
+      title: title.substring(0, 100),
+      author,
+      contentLength: rawContent.length,
+      cleanedLength: cleanedContent.length
+    });
 
     return {
       title,
