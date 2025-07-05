@@ -23,8 +23,8 @@ export function middleware(request: NextRequest) {
   }
   
   // Check if this looks like a nu.nl article path
-  // Pattern: /category/id/article-slug or /category/article-slug
-  const nuUrlPattern = /^\/([a-z-]+)\/(\d+\/)?[a-z0-9-]+\.html?$/i;
+  // Pattern: /category/id/article-slug-with-hyphens.html
+  const nuUrlPattern = /^\/[a-z-]+\/\d+\/[a-z0-9-]+\.html?$/i;
   
   if (nuUrlPattern.test(pathname)) {
     // This is a nu.nl article path - redirect to analyze page
